@@ -1,0 +1,1057 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="曲阜旅游指南——地图定位、景点标注、详情导览一站式旅游助手">
+<title>曲阜旅游指南 · 圣城漫游记</title>
+<style>
+  :root {
+    --ink: #231a1a;
+    --red-deep: #8f1d22;
+    --red: #b8352e;
+    --gold: #f5c042;
+    --gold-deep: #c9932a;
+    --paper: #fbf6ec;
+    --blue: #2f6df6;
+    --shadow: 0 6px 24px rgba(35, 26, 26, .14);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { font-size: 16px; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding-bottom: 84px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ===== 顶部国风渐变横幅 ===== */
+  .hero {
+    position: relative;
+    padding: calc(env(safe-area-inset-top) + 22px) 20px 20px;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(245, 192, 66, .35), transparent 45%),
+      radial-gradient(circle at 10% 90%, rgba(255, 120, 70, .3), transparent 50%),
+      linear-gradient(140deg, #6d1216, #8f1d22 40%, #c84b31);
+    color: #fff;
+    border-radius: 0 0 26px 26px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .hero::before {
+    content: "曲";
+    position: absolute;
+    right: -8px;
+    top: -30px;
+    font-size: 150px;
+    font-weight: 900;
+    color: rgba(245, 192, 66, .16);
+    font-family: "STKaiti", "KaiTi", serif;
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 26px;
+    letter-spacing: 2px;
+    font-family: "STKaiti", "KaiTi", serif;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold);
+    text-shadow: 0 0 14px rgba(245, 192, 66, .6);
+  }
+  .hero p.sub {
+    margin-top: 6px;
+    font-size: 13px;
+    opacity: .92;
+    letter-spacing: 1px;
+  }
+  .hero .stats {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .hero .stats span {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    border: 1px solid rgba(245, 192, 66, .45);
+    backdrop-filter: blur(6px);
+    color: #ffe9b0;
+  }
+  .hero .notice {
+    display: none;
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .28);
+    border: 1px dashed rgba(245, 192, 66, .6);
+    color: #ffd98a;
+  }
+
+  /* ===== 分类筛选条 ===== */
+  .chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 16px 16px 6px;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none;
+    border: 1px solid #e8dcc3;
+    background: #fff;
+    color: #7a5b3a;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .chip.on {
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+    border-color: transparent;
+    color: #5a3a00;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(245, 192, 66, .5);
+    transform: translateY(-1px);
+  }
+
+  /* ===== 地图区域 ===== */
+  .map-wrap {
+    position: relative;
+    margin: 10px 16px 0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid #eeddb8;
+    height: 58vh;
+    min-height: 380px;
+  }
+  #mapContainer { width: 100%; height: 100%; }
+  .map-tip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 99;
+    display: none;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+    color: #7a5b3a;
+    line-height: 1.6;
+  }
+  .locate-btn {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    z-index: 99;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+    box-shadow: 0 4px 14px rgba(245, 192, 66, .55);
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .locate-btn:active { transform: scale(.9); }
+  .locate-btn.pinging::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 3px solid rgba(245, 192, 66, .8);
+    animation: ping 1s infinite;
+  }
+  @keyframes ping {
+    to { transform: scale(1.5); opacity: 0; }
+  }
+  .key-error {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #fbf6ec;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #7a5b3a;
+  }
+
+  /* ===== 地图自定义标记 ===== */
+  .mk {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .25));
+  }
+  .mk b {
+    width: 38px;
+    height: 38px;
+    border-radius: 50% 50% 50% 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    transform: rotate(45deg);
+    border: 2.5px solid #fff;
+  }
+  .mk b s {
+    text-decoration: none;
+    transform: rotate(-45deg);
+  }
+  .mk i {
+    font-style: normal;
+    font-size: 11px;
+    margin-top: 5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(35, 26, 26, .78);
+    color: #ffe9b0;
+    white-space: nowrap;
+    border: 1px solid rgba(245, 192, 66, .4);
+  }
+  .mk.cat-guwen b { background: linear-gradient(135deg, #c84b31, #8f1d22); }
+  .mk.cat-bowuguan b { background: linear-gradient(135deg, #5b8def, #2f56c9); }
+  .mk.cat-ziran b { background: linear-gradient(135deg, #3fbf7f, #1d8a54); }
+  .mk.cat-jingqu b { background: linear-gradient(135deg, #b07ce8, #7a3fd1); }
+  .mk.cat-meishi b { background: linear-gradient(135deg, #f5a623, #e07b12); }
+  .mk.me { transform-origin: center; animation: mePulse 1.6s infinite; }
+  @keyframes mePulse {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(47, 109, 246, 0)); }
+    50% { filter: drop-shadow(0 0 10px rgba(47, 109, 246, .8)); }
+  }
+
+  /* ===== 景点信息浮窗(地图) ===== */
+  .iw {
+    max-width: 240px;
+    font-family: inherit;
+  }
+  .iw .iw-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .iw .iw-emoji {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: linear-gradient(135deg, #f7e6bd, #eeddb8);
+  }
+  .iw h4 { font-size: 15px; color: #231a1a; }
+  .iw .iw-rate {
+    font-size: 11px;
+    color: #c9932a;
+    letter-spacing: 1px;
+  }
+  .iw p {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #6b5b4a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .iw .iw-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .iw .iw-btns a {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 7px 0;
+    border-radius: 8px;
+    transition: opacity .2s;
+  }
+  .iw .iw-btns a:active { opacity: .7; }
+  .iw .btn-nav {
+    color: #fff;
+    background: linear-gradient(135deg, #c84b31, #8f1d22);
+  }
+  .iw .btn-detail {
+    color: #8f1d22;
+    border: 1.5px solid #c84b31;
+    background: #fff;
+  }
+
+  /* ===== 景点列表卡片 ===== */
+  .list-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 22px 20px 8px;
+  }
+  .list-head h2 {
+    font-size: 19px;
+    font-family: "STKaiti", "KaiTi", serif;
+  }
+  .list-head span { font-size: 12px; color: #a58b62; }
+  .cards { padding: 4px 16px 20px; display: grid; gap: 12px; }
+  .card {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f0e4c8;
+    box-shadow: 0 2px 10px rgba(143, 100, 30, .07);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    animation: cardIn .5s both;
+  }
+  .card:active {
+    transform: scale(.97);
+    box-shadow: 0 6px 18px rgba(143, 100, 30, .18);
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card .c-emoji {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, #f9efdc, #f0e0be);
+    border: 1px solid #ead9b4;
+  }
+  .card .c-body { flex: 1; min-width: 0; }
+  .card .c-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 { font-size: 15.5px; }
+  .card .c-tag {
+    flex: none;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, #c84b31, #8f1d22);
+  }
+  .card .c-meta {
+    font-size: 12px;
+    color: #a58b62;
+    margin-top: 4px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .card .c-desc {
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #7a6a52;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card .c-dist {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  /* ===== 详情底部弹层 ===== */
+  .detail-mask,
+  .detail {
+    position: fixed;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .3s;
+  }
+  .detail-mask {
+    inset: 0;
+    background: rgba(20, 12, 8, .55);
+    backdrop-filter: blur(3px);
+  }
+  .detail {
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 100%);
+    width: 100%;
+    max-width: 560px;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    max-height: 82vh;
+    overflow-y: auto;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+  }
+  .detail-mask.show, .detail.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .detail.show { transform: translate(-50%, 0); }
+  .d-head {
+    padding: 26px 20px 18px;
+    color: #fff;
+    position: relative;
+  }
+  .d-head .d-emoji { font-size: 40px; }
+  .d-head h3 {
+    font-size: 22px;
+    margin-top: 6px;
+    font-family: "STKaiti", "KaiTi", serif;
+    letter-spacing: 1px;
+  }
+  .d-head .d-rate { font-size: 13px; margin-top: 4px; color: #ffe9b0; }
+  .d-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .22);
+    color: #fff;
+    font-size: 17px;
+    cursor: pointer;
+  }
+  .d-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 14px 20px 0;
+  }
+  .d-tags span {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #f9efdc;
+    color: #8a6420;
+    border: 1px solid #ecd9a8;
+  }
+  .d-rows { padding: 14px 20px 0; }
+  .d-rows div {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #f0e4c8;
+    color: #5f4d38;
+  }
+  .d-rows div:last-child { border: none; }
+  .d-rows b { flex: none; font-weight: 400; }
+  .d-desc {
+    margin: 12px 20px 0;
+    padding: 14px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #5f4d38;
+    background: #fbf4e2;
+    border-radius: 14px;
+  }
+  .d-tip {
+    margin: 12px 20px 0;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #8a5a00;
+    background: linear-gradient(135deg, #fff4d6, #ffe9b0);
+    border-radius: 14px;
+    border: 1px dashed #e5c46a;
+  }
+  .d-tip b { color: #b8730c; }
+  .d-cta {
+    display: block;
+    margin: 18px 20px 0;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    background: linear-gradient(135deg, #c84b31, #8f1d22);
+    border-radius: 14px;
+    box-shadow: 0 5px 16px rgba(184, 53, 46, .4);
+  }
+  .d-cta:active { opacity: .8; }
+
+  /* ===== 底部导航 ===== */
+  .tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 560px;
+    z-index: 150;
+    display: flex;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255, 252, 244, .96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #f0e4c8;
+  }
+  .tabbar a {
+    flex: 1;
+    text-align: center;
+    padding: 9px 0 8px;
+    text-decoration: none;
+    color: #b3a184;
+    font-size: 11px;
+  }
+  .tabbar a span { display: block; font-size: 21px; }
+  .tabbar a.on { color: #b8352e; font-weight: 600; }
+
+  /* ===== 提示条 ===== */
+  #toast {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    z-index: 300;
+    max-width: 86%;
+    padding: 10px 18px;
+    border-radius: 12px;
+    background: rgba(35, 26, 26, .88);
+    color: #ffe9b0;
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .3s;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (min-width: 560px) {
+    body { box-shadow: 0 0 40px rgba(143, 100, 30, .12); min-height: 100vh; }
+  }
+
+  /* ===== 桌面端自动适配：≥1024px 宽屏自动切换双栏布局 ===== */
+  @media (min-width: 1024px) {
+    body { max-width: 1200px; }
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 4px 28px;
+      align-items: start;
+      padding: 0 8px;
+    }
+    .content .chips { grid-column: 1; grid-row: 1; overflow: visible; flex-wrap: wrap; }
+    .content .map-wrap { grid-column: 1; grid-row: 2; height: 74vh; min-height: 560px; margin: 10px 0 0; }
+    .content section { grid-column: 2; grid-row: 1 / 3; padding-top: 14px; }
+    .hero h1 { font-size: 30px; }
+    .tabbar { max-width: 1200px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>曲阜旅游指南 <em>· 圣城漫游记</em></h1>
+  <p class="sub">东方圣城 · 孔子故里 —— 一图在手，遍览三孔圣地</p>
+  <div class="stats">
+    <span>📍 实时定位</span>
+    <span>🏛 10 大景点</span>
+    <span>🗺 一键导航</span>
+    <span>📱 手机适配</span>
+  </div>
+  <div class="notice" id="httpNotice">
+    ⚠ 当前通过 HTTP 访问，浏览器安全策略会限制精确 GPS 定位（已自动降级为城市级定位）。
+    精确卫星定位需 HTTPS 域名支持，详见作品说明。
+  </div>
+</header>
+
+<div class="content">
+<nav class="chips" id="chips"></nav>
+
+<div class="map-wrap">
+  <div id="mapContainer"></div>
+  <div class="map-tip" id="mapTip"></div>
+  <button class="locate-btn" id="locateBtn" title="定位">📍</button>
+  <div class="key-error" id="keyError">
+    <div>
+      <div style="font-size:34px">🔑</div>
+      <b>地图未加载</b><br>
+      请先在 index.html 顶部找到<br>
+      <code style="background:#f0e4c8;padding:2px 8px;border-radius:6px">BMAP_AK</code><br>
+      请检查 AK 配置或网络后刷新
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="list-head">
+    <h2>精选景点</h2>
+    <span>点击卡片在地图中查看 · 定位后显示距离</span>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+</div>
+
+<!-- 详情弹层 -->
+<div class="detail-mask" id="detailMask"></div>
+<div class="detail" id="detail"></div>
+
+<!-- 底部导航 -->
+<nav class="tabbar">
+  <a data-page="home"><span>🏠</span>首页</a>
+  <a class="on" data-page="map"><span>🗺️</span>地图</a>
+  <a data-page="guide"><span>📜</span>攻略</a>
+  <a data-page="me"><span>👤</span>我的</a>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   百度地图版 · 曲阜旅游指南（分支版本）
+   AK：百度地图开放平台免费申请，个人开发者认证后配额内免费
+   ============================================================ */
+const BMAP_AK = "uX33NBs1GiQBFdAoIVyhgNWi8bNC3DaA";
+
+/* ---------- 分类 ---------- */
+const CATS = {
+  guwen:    { name: "文化古迹", emoji: "🏛️" },
+  bowuguan: { name: "博物馆",   emoji: "🏛️" },
+  ziran:    { name: "自然风光", emoji: "⛰️" },
+  jingqu:   { name: "文化景区", emoji: "🏔️" },
+  meishi:   { name: "美食街区", emoji: "🍢" }
+};
+
+/* ---------- 景点数据（坐标为 GCJ-02，运行时自动转换为百度 BD-09） ---------- */
+const SPOTS = [
+  { id:1, name:"孔庙", cat:"guwen", emoji:"🏯", pos:[116.9900,35.5965], rate:4.9, tag:"世界遗产 5A",
+    price:"联票 ¥140（三孔）", time:"08:30-17:00", addr:"曲阜市神道路",
+    desc:"祭祀孔子的庙宇，中国三大古建筑群之一。九进院落沿中轴线展开，大成殿雕龙石柱、杏坛讲学旧址皆为精华，是儒家文化的精神原点。",
+    tip:"三孔联票 7 日有效；早晨开城仪式在万仞宫墙，建议 8 点前到。" },
+  { id:2, name:"孔府", cat:"guwen", emoji:"🏯", pos:[116.9895,35.5952], rate:4.8, tag:"世界遗产 5A",
+    price:"联票 ¥140（三孔）", time:"08:30-17:00", addr:"曲阜市鼓楼北街",
+    desc:"孔子嫡系后裔“衍圣公”世代居住的府邸，号称“天下第一家”。前衙后宅，戒贪图影壁、重光门最有故事，孔府档案堪称半部中国史。",
+    tip:"孔庙北墙小门直通孔府，不必走回头路。" },
+  { id:3, name:"孔林", cat:"guwen", emoji:"🌳", pos:[116.9790,35.6070], rate:4.7, tag:"世界遗产 5A",
+    price:"联票 ¥140（三孔）", time:"08:30-17:30", addr:"曲阜市林道路",
+    desc:"孔子及孔氏家族专用墓地，延续 2500 余年、葬着近十万后裔，是世界上规模最大、延时最久的家族墓地。神道两侧苍桧翠柏，于氏坊与楷树相传为子贡手植。",
+    tip:"园区极大，园内环保车 ¥20；步行需 2 小时以上。" },
+  { id:4, name:"万仞宫墙·明故城", cat:"guwen", emoji:"🏯", pos:[116.9887,35.5978], rate:4.6, tag:"打卡地标",
+    price:"免费（登城墙另购）", time:"开城仪式 08:00", addr:"曲阜市神道路南端",
+    desc:"明嘉靖年间修筑的曲阜县城墙，“万仞宫墙”四字典出子贡“夫子之墙数仞，不得其门而入”。每天清晨有仿古开城仪式，鼓乐喧天，是曲阜最出片的瞬间。",
+    tip:"开城仪式约 20 分钟，站正面台阶视野最佳。" },
+  { id:5, name:"颜庙（复圣庙）", cat:"guwen", emoji:"🏯", pos:[116.9920,35.5988], rate:4.5, tag:"贤圣遗迹",
+    price:"免费（需预约）", time:"09:00-17:00", addr:"曲阜市颜庙街",
+    desc:"祭祀孔子最得意的弟子颜回之庙，元代“陋巷故址”碑立于孔子亲手所掘的陋巷井旁。乐亭、复圣殿古朴静谧，游人稀少，最适合安静怀古。",
+    tip:"与三孔步行可达，顺路一观约需 40 分钟。" },
+  { id:6, name:"孔子博物馆", cat:"bowuguan", emoji:"🏛️", pos:[117.0120,35.5830], rate:4.8, tag:"国家一级博物馆",
+    price:"免费（需预约）", time:"09:00-17:00 周一闭馆", addr:"曲阜市孔子大道100号",
+    desc:"2019 年开放的孔子文化“新地标”，馆藏 70 万件文物。书于竹帛、商周十供、战国黄玉马……展陈用声光电把千年儒学讲成一场沉浸式大片。",
+    tip:"公众号“孔子博物馆”提前预约，内有免费讲解场次。" },
+  { id:7, name:"尼山圣境", cat:"jingqu", emoji:"🏔️", pos:[117.0860,35.4950], rate:4.7, tag:"夜游胜地",
+    price:"约 ¥80 起", time:"09:00-21:00", addr:"曲阜市尼山镇",
+    desc:"孔子诞生的尼山之上打造的儒文化度假区。72 米孔子像俯瞰圣水湖，大学堂内“仁义礼智信”厅金碧辉煌；夜间无人机秀与礼乐灯光焰火表演震撼全网。",
+    tip:"距市区约 25 公里，夜场无人机秀需留意当日场次；自驾或打车更方便。" },
+  { id:8, name:"石门山", cat:"ziran", emoji:"⛰️", pos:[116.9050,35.6600], rate:4.4, tag:"国家森林公园",
+    price:"约 ¥30", time:"08:00-17:00", addr:"曲阜市石门山镇",
+    desc:"《水浒传》中“石门缉盗”故事的发生地，李白、杜甫曾在此把酒话别。双峰对峙如门，洞穴幽深，元代“石门寺”藏于林间，是登山访古的好去处。",
+    tip:"山势平缓，普通体力 3 小时往返；雨后石阶湿滑需防滑鞋。" },
+  { id:9, name:"九仙山", cat:"ziran", emoji:"⛰️", pos:[116.8420,35.7480], rate:4.3, tag:"小众秘境",
+    price:"免费", time:"全天", addr:"曲阜市吴村镇",
+    desc:"传说九位仙女下凡化身九峰而得名，为泰山山脉余脉。山上果树成海，春有桃花秋有红叶，望远镜观景台可远眺泰岱群山，是本地人私藏的周末去处。",
+    tip:"完全免费且人少；自驾沿乡村公路上山，注意会车。" },
+  { id:10, name:"五马祠街", cat:"meishi", emoji:"🍢", pos:[116.9878,35.5958], rate:4.2, tag:"夜市烟火",
+    price:"免费", time:"全天（夜市更热闹）", addr:"曲阜市五马祠街",
+    desc:"明代五马大夫祠所在，如今是曲阜最热闹的美食商业街。孔府菜、熏豆腐、煎饼卷大葱、粥泡羊肉……逛完三孔来这儿用一顿饭读懂曲阜烟火气。",
+    tip:"傍晚至夜间最热闹；孔府菜人均约 ¥60-120。" }
+];
+
+/* ---------- GCJ-02（高德）→ BD-09（百度）坐标转换 ---------- */
+const XPI = Math.PI * 3000 / 180;
+function gcj2bd(lng, lat) {
+  const z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * XPI);
+  const th = Math.atan2(lat, lng) + 0.000003 * Math.cos(lng * XPI);
+  return [z * Math.cos(th) + 0.0065, z * Math.sin(th) + 0.006];
+}
+
+/* ---------- 工具 ---------- */
+const $ = s => document.querySelector(s);
+function toast(msg, ms = 2600) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), ms);
+}
+function distText(bdPos) {
+  if (!window._myPos) return "";
+  const R = 6371000, toR = x => x * Math.PI / 180;
+  const [lon1, lat1] = window._myPos, [lon2, lat2] = bdPos;
+  const dLat = toR(lat2 - lat1), dLon = toR(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toR(lat1))*Math.cos(toR(lat2))*Math.sin(dLon/2)**2;
+  let m = Math.round(2 * R * Math.asin(Math.sqrt(a)));
+  return m < 1000 ? `距你 ${m} 米` : `距你 ${(m/1000).toFixed(1)} 公里`;
+}
+/* 百度地图标点 URI：coord_type=gcj02 使原始坐标直接可用 */
+function navUrl(spot) {
+  return `https://api.map.baidu.com/marker?location=${spot.pos[1]},${spot.pos[0]}&coord_type=gcj02&title=${encodeURIComponent(spot.name)}&content=${encodeURIComponent(spot.name)}&output=html&src=qufu-guide`;
+}
+
+/* ---------- 地图加载（AK 校验） ---------- */
+if (!BMAP_AK || BMAP_AK.includes("这里填")) {
+  $("#keyError").style.display = "flex";
+} else {
+  /* 百度官方异步加载方式：通过 callback 参数在 SDK 真正就绪后初始化 */
+  window.__bmapReady = () => {
+    clearTimeout(guard);
+    if (!window.BMapGL) {
+      showMapErr("百度地图初始化失败：<b>AK 无效或域名受限</b>。请确认 AK 为「浏览器端」类型且未设置域名白名单");
+      return;
+    }
+    initApp();
+  };
+  const sc = document.createElement("script");
+  sc.src = `https://api.map.baidu.com/api?v=1.0&type=webgl&ak=${BMAP_AK}&callback=__bmapReady`;
+  sc.onerror = () => $("#keyError").style.display = "flex";
+  document.head.appendChild(sc);
+  const guard = setTimeout(() => {
+    if (!window.BMapGL) $("#keyError").style.display = "flex";
+  }, 8000);
+}
+
+/* ---------- 主程序 ---------- */
+let map, markers = {}, userMarker, accCircle;
+
+const CAT_COLORS = {
+  guwen:    ["#c84b31", "#8f1d22"],
+  bowuguan: ["#5b8def", "#2f56c9"],
+  ziran:    ["#3fbf7f", "#1d8a54"],
+  jingqu:   ["#b07ce8", "#7a3fd1"],
+  meishi:   ["#f5a623", "#e07b12"]
+};
+
+/* 渐变水滴图标（SVG 内联，含 emoji） */
+function pinIcon(emoji, c1, c2, size = 40) {
+  const h = Math.round(size * 1.22);
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${h}">` +
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">` +
+    `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>` +
+    `</linearGradient></defs>` +
+    `<path d="M${size/2} 1.5C${size*0.24} 1.5 1.5 ${size*0.24} 1.5 ${size/2}C1.5 ${h*0.72} ${size/2} ${h-1.5} ${size/2} ${h-1.5}S${size-1.5} ${h*0.72} ${size-1.5} ${size/2}C${size-1.5} ${size*0.24} ${size*0.76} 1.5 ${size/2} 1.5z" fill="url(#g)" stroke="#fff" stroke-width="2.5"/>` +
+    `<text x="${size/2}" y="${size*0.63}" font-size="${size*0.42}" text-anchor="middle">${emoji}</text></svg>`;
+  const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  return new BMapGL.Icon(url, new BMapGL.Size(size, h), { anchor: new BMapGL.Size(size / 2, h) });
+}
+
+function showMapErr(msg) {
+  const ke = $("#keyError");
+  ke.innerHTML =
+    '<div style="font-size:13px;line-height:2">🗺️ <b>地图加载失败</b><br>' + msg +
+    '<br>请按 <b>F12</b> 打开浏览器控制台（Console 标签），<br>把<b style="color:#b8352e">红色报错文字</b>截图发给开发者即可定位原因。</div>';
+  ke.style.display = "flex";
+}
+
+window.addEventListener("error", e => {
+  if (window._mapReady || !e.message) return;
+  showMapErr("页面脚本错误：" + e.message);
+});
+
+function initApp() {
+  map = new BMapGL.Map("mapContainer");
+  map.centerAndZoom(new BMapGL.Point(116.9966, 35.6025), 13);
+  map.enableScrollWheelZoom(true);
+
+  SPOTS.forEach(s => { s.bd = gcj2bd(s.pos[0], s.pos[1]); });
+
+  SPOTS.forEach(s => {
+    const mk = new BMapGL.Marker(new BMapGL.Point(s.bd[0], s.bd[1]), {
+      icon: pinIcon(s.emoji, CAT_COLORS[s.cat][0], CAT_COLORS[s.cat][1])
+    });
+    const label = new BMapGL.Label(s.name, {
+      offset: new BMapGL.Size(-Math.round(s.name.length * 5.5 + 8), 4)
+    });
+    label.setStyle({
+      background: "rgba(35,26,26,.78)",
+      color: "#ffe9b0",
+      border: "1px solid rgba(245,192,66,.4)",
+      borderRadius: "999px",
+      fontSize: "11px",
+      padding: "2px 8px",
+      whiteSpace: "nowrap"
+    });
+    mk.setLabel(label);
+    map.addOverlay(mk);
+    mk.addEventListener("click", () => openInfo(s));
+    markers[s.id] = mk;
+  });
+
+  if (!window.isSecureContext) {
+    $("#httpNotice").style.display = "block";
+    showMapTip("⚠ HTTP 模式：GPS 精确定位受限，点击 📍 使用城市级定位，之后可点击地图手动修正位置");
+    setTimeout(hideMapTip, 7000);
+  }
+
+  /* 手动选点模式：点击地图设置"我的位置" */
+  map.addEventListener("click", e => {
+    if (!window._manualPick) return;
+    window._manualPick = false;
+    hideMapTip();
+    const ll = e.latlng || e.point;
+    setMyPos(ll.lng, ll.lat, null);
+    toast("✅ 已手动设置“我的位置”，各景点距离已更新");
+  });
+
+  buildChips();
+  buildCards();
+  window._mapReady = true;
+}
+
+function openInfo(s) {
+  const cat = CATS[s.cat];
+  const d = distText(s.bd);
+  const html = `
+    <div class="iw">
+      <div class="iw-top">
+        <div class="iw-emoji">${s.emoji}</div>
+        <div>
+          <h4>${s.name}</h4>
+          <div class="iw-rate">★ ${s.rate} · ${cat.name}</div>
+        </div>
+      </div>
+      <p>${s.desc}</p>
+      ${d ? `<div style="margin-top:6px;font-size:12px;color:#2f6df6;font-weight:600">${d}</div>` : ""}
+      <div class="iw-btns">
+        <a class="btn-nav" href="${navUrl(s)}" target="_blank">🧭 导航前往</a>
+        <a class="btn-detail" href="javascript:void(0)" onclick="openDetail(${s.id})">详情</a>
+      </div>
+    </div>`;
+  const iw = new BMapGL.InfoWindow(html, { offset: new BMapGL.Size(0, -48) });
+  map.openInfoWindow(iw, new BMapGL.Point(s.bd[0], s.bd[1]));
+}
+
+function buildChips() {
+  const box = $("#chips");
+  const mk = (key, label) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (key === "all" ? " on" : "");
+    b.textContent = label;
+    b.onclick = () => {
+      box.querySelectorAll(".chip").forEach(x => x.classList.remove("on"));
+      b.classList.add("on");
+      filterCat(key);
+    };
+    box.appendChild(b);
+  };
+  mk("all", "全部");
+  Object.keys(CATS).forEach(k => mk(k, `${CATS[k].emoji} ${CATS[k].name}`));
+}
+
+function filterCat(cat) {
+  const list = SPOTS.filter(s => cat === "all" || s.cat === cat);
+  SPOTS.forEach(s => map.removeOverlay(markers[s.id]));
+  list.forEach(s => map.addOverlay(markers[s.id]));
+  if (userMarker) map.addOverlay(userMarker);
+  if (accCircle) map.addOverlay(accCircle);
+  buildCards(cat);
+  if (list.length) {
+    const pts = list.map(s => new BMapGL.Point(s.bd[0], s.bd[1]));
+    map.setViewport(pts, { margins: [60, 60, 60, 60] });
+  }
+}
+
+function buildCards(cat = "all") {
+  const box = $("#cards");
+  box.innerHTML = "";
+  SPOTS.filter(s => cat === "all" || s.cat === cat).forEach((s, i) => {
+    const c = CATS[s.cat];
+    const el = document.createElement("div");
+    el.className = "card";
+    el.style.animationDelay = `${i * 60}ms`;
+    el.innerHTML = `
+      <div class="c-emoji">${s.emoji}</div>
+      <div class="c-body">
+        <div class="c-row"><h3>${s.name}</h3><span class="c-tag">${s.tag.split(" ")[0]}</span></div>
+        <div class="c-meta"><span>★ ${s.rate}</span><span>${c.name}</span><span>${s.price}</span></div>
+        <div class="c-desc">${s.desc}</div>
+        <div class="c-dist" data-spot="${s.id}">${distText(s.bd) || "定位后显示距离"}</div>
+      </div>`;
+    el.onclick = () => {
+      map.centerAndZoom(new BMapGL.Point(s.bd[0], s.bd[1]), 15);
+      openInfo(s);
+      $(".map-wrap").scrollIntoView({ behavior: "smooth" });
+    };
+    box.appendChild(el);
+  });
+}
+
+/* ---------- 详情弹层 ---------- */
+window.openDetail = id => {
+  map && map.closeInfoWindow();
+  const s = SPOTS.find(x => x.id === id);
+  const c = CATS[s.cat];
+  const grads = {
+    guwen: "linear-gradient(135deg,#6d1216,#c84b31)",
+    bowuguan: "linear-gradient(135deg,#1c3fa0,#5b8def)",
+    ziran: "linear-gradient(135deg,#0f6e3e,#3fbf7f)",
+    jingqu: "linear-gradient(135deg,#4b1d8a,#b07ce8)",
+    meishi: "linear-gradient(135deg,#b35a00,#f5a623)"
+  };
+  $("#detail").innerHTML = `
+    <div class="d-head" style="background:${grads[s.cat]}">
+      <button class="d-close" onclick="closeDetail()">✕</button>
+      <div class="d-emoji">${s.emoji}</div>
+      <h3>${s.name}</h3>
+      <div class="d-rate">★ ${s.rate} 分 · ${c.name} · 百度地图版</div>
+    </div>
+    <div class="d-tags">
+      <span>🏅 ${s.tag}</span><span>🎫 ${s.price}</span><span>🕘 ${s.time}</span>
+    </div>
+    <div class="d-rows">
+      <div><b>📍 地址</b>${s.addr}</div>
+      <div><b>📏 距离</b><span id="dDist">${distText(s.bd) || "定位后显示距离"}</span></div>
+      <div><b>🧭 坐标</b>${s.pos[0]}, ${s.pos[1]}（GCJ-02，自动换算 BD-09 展示）</div>
+    </div>
+    <div class="d-desc">${s.desc}</div>
+    <div class="d-tip"><b>💡 游玩贴士</b><br>${s.tip}</div>
+    <a class="d-cta" href="${navUrl(s)}" target="_blank">🧭 导航前往 ${s.name}</a>`;
+  $("#detailMask").classList.add("show");
+  $("#detail").classList.add("show");
+};
+window.closeDetail = () => {
+  $("#detailMask").classList.remove("show");
+  $("#detail").classList.remove("show");
+};
+$("#detailMask").onclick = closeDetail;
+
+/* ---------- 定位 ---------- */
+function showMapTip(html) { const t = $("#mapTip"); t.innerHTML = html; t.style.display = "block"; }
+function hideMapTip() { $("#mapTip").style.display = "none"; }
+
+function setMyPos(lng, lat, accuracy) {
+  window._myPos = [lng, lat];
+  if (userMarker) map.removeOverlay(userMarker);
+  if (accCircle) map.removeOverlay(accCircle);
+  userMarker = new BMapGL.Marker(new BMapGL.Point(lng, lat), {
+    icon: pinIcon("🧍", "#5b8def", "#2f56c9", 36)
+  });
+  const lb = new BMapGL.Label("我的位置", { offset: new BMapGL.Size(-32, 4) });
+  lb.setStyle({
+    background: "rgba(47,109,246,.85)", color: "#fff",
+    border: "1px solid rgba(91,141,239,.6)", borderRadius: "999px",
+    fontSize: "11px", padding: "2px 8px", whiteSpace: "nowrap"
+  });
+  userMarker.setLabel(lb);
+  map.addOverlay(userMarker);
+  if (accuracy) {
+    accCircle = new BMapGL.Circle(new BMapGL.Point(lng, lat), accuracy, {
+      strokeColor: "#2f6df6", strokeWeight: 1, strokeOpacity: .5,
+      fillColor: "#2f6df6", fillOpacity: .12
+    });
+    map.addOverlay(accCircle);
+  }
+  document.querySelectorAll(".c-dist").forEach(el => {
+    const s = SPOTS.find(x => x.id == el.dataset.spot);
+    if (s) el.textContent = distText(s.bd);
+  });
+  const dEl = $("#dDist");
+  if (dEl && $("#detail h3")) {
+    const s = SPOTS.find(x => x.name === $("#detail h3").textContent);
+    if (s) dEl.textContent = distText(s.bd);
+  }
+}
+
+$("#locateBtn").onclick = () => {
+  if (!window.BMapGL || !map) return;
+  const btn = $("#locateBtn");
+  btn.classList.add("pinging");
+  showMapTip("📡 正在定位…");
+  window._manualPick = false;
+  const done = () => btn.classList.remove("pinging");
+
+  /* 兜底：手动点选"我的位置" */
+  const manualPick = hint => {
+    window._manualPick = true;
+    showMapTip("✋ " + hint + "<br><b>请点击地图上你所在的位置</b>（可先放大到街道再点）");
+    toast("已进入手动选点模式：点击地图任意位置即可设为“我的位置”", 4000);
+  };
+
+  /* IP 城市级定位（百度定位库） */
+  const ipLocate = () => {
+    const lc = new BMapGL.LocalCity();
+    lc.get(res => {
+      done();
+      if (res && res.center) {
+        map.centerAndZoom(res.center, 12);
+        showMapTip(
+          `📡 <b>百度城市级定位</b>：${res.name || ""}（IP 定位精度所限）<br>` +
+          `手机 GPS 可达米级精度；当前环境可点击地图手动校正位置。`
+        );
+        setTimeout(() => {
+          hideMapTip();
+          manualPick("如需计算景点距离，可在地图上手动校正你的位置");
+        }, 3500);
+      } else {
+        manualPick("定位服务暂不可用（可能是网络原因）");
+      }
+    });
+  };
+
+  if (window.isSecureContext) {
+    /* HTTPS / localhost：浏览器精确定位，失败或误差过大自动降级 */
+    const geo = new BMapGL.Geolocation();
+    geo.getCurrentPosition(function (r) {
+      if (this.getStatus() === window.BMAP_STATUS_SUCCESS && r && r.point) {
+        const acc = r.accuracy || 0;
+        if (acc > 5000) {
+          /* 浏览器返回的是 IP 猜测位（误差上万米，不可信）→ 改用百度定位库 */
+          showMapTip("⚠ 浏览器 IP 定位误差较大（约 " + (acc / 1000).toFixed(0) + " 公里），正在改用百度定位库校准…");
+          ipLocate();
+        } else {
+          done();
+          setMyPos(r.point.lng, r.point.lat, acc);
+          map.centerAndZoom(new BMapGL.Point(r.point.lng, r.point.lat), 15);
+          hideMapTip();
+          toast(`✅ 定位成功！误差约 ${Math.round(acc)} 米`);
+        }
+      } else {
+        ipLocate();
+      }
+    }, { enableHighAccuracy: true, timeout: 9000 });
+  } else {
+    /* HTTP：浏览器禁止 GPS，直接用百度 IP 定位 */
+    ipLocate();
+  }
+};
+
+/* ---------- 底部导航（预留扩展） ---------- */
+document.querySelectorAll(".tabbar a").forEach(a => {
+  a.onclick = () => {
+    if (a.classList.contains("on")) return;
+    toast(`「${a.textContent.slice(1)}」功能开发中，下一版上线，敬请期待 🚧`);
+  };
+});
+</script>
