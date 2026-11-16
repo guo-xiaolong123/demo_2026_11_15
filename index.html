@@ -93,6 +93,17 @@
     border: 1px dashed rgba(245, 192, 66, .6);
     color: #ffd98a;
   }
+  .hero .loc-tip {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .28);
+    border: 1px solid rgba(245, 192, 66, .45);
+    color: #ffe9b0;
+  }
+  .hero .loc-tip b { color: var(--gold); }
              
   /* ===== 分类筛选条 ===== */
   .chips {
@@ -502,6 +513,42 @@
   }
   .d-cta:active { opacity: .8; }
 
+  /* ===== 开场定位说明弹窗 ===== */
+  .loc-mask {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(30, 20, 10, .55); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .loc-mask.show { display: flex; animation: fadeIn .25s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .loc-dialog {
+    position: relative; width: 100%; max-width: 380px;
+    background: #fbf6ec; border-radius: 20px; border: 1.5px solid #e2c07a;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .35); overflow: hidden;
+    animation: popIn .3s;
+  }
+  @keyframes popIn { from { transform: scale(.92) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+  .loc-close {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(0, 0, 0, .15); color: #ffe9b0; font-size: 14px;
+  }
+  .loc-head {
+    padding: 15px 18px 12px; font-size: 16px; font-weight: 900; color: #fff7e8;
+    background: linear-gradient(90deg, #a8352a, #c05a2e);
+  }
+  .loc-body { padding: 14px 18px 4px; }
+  .loc-body .pt { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+  .loc-body .pt .e { flex: none; font-size: 20px; }
+  .loc-body .pt b { font-size: 13.5px; color: #b8352e; }
+  .loc-body .pt p { font-size: 12.5px; color: #6b5a42; line-height: 1.8; margin-top: 2px; }
+  .loc-ok {
+    display: block; margin: 10px 18px 18px; width: calc(100% - 36px);
+    border: none; cursor: pointer; font-size: 14px; font-weight: 800; color: #5a3200;
+    background: linear-gradient(90deg, #f5c042, #ffdd85); padding: 11px 0; border-radius: 999px;
+    box-shadow: 0 6px 16px rgba(245, 192, 66, .4);
+  }
+
   /* ===== 底部导航 ===== */
   .tabbar {
     position: fixed;
@@ -586,6 +633,11 @@
     ⚠ 当前通过 HTTP 访问，浏览器安全策略会限制精确 GPS 定位（已自动降级为城市级定位）。
     精确卫星定位需 HTTPS 域名支持，详见作品说明。
   </div>
+  <div class="loc-tip">
+    📱 <b>移动优先设计</b>：建议用<b>手机端打开本应用</b>，体验最佳。<br>
+    💡 <b>定位使用建议</b>：自动定位模式下，建议使用<b>手机端并开启移动数据流量</b>（GPS 精度 10~50 米）；
+    电脑端可能无法通过 IP 准确判定位置，建议点 📍 后<b>手动点选地图位置</b>，距离计算同样精准。
+  </div>
 </header>
 
 <div class="content">
@@ -619,12 +671,24 @@
 <div class="detail-mask" id="detailMask"></div>
 <div class="detail" id="detail"></div>
 
+<!-- 开场定位说明弹窗 -->
+<div class="loc-mask" id="locMask">
+  <div class="loc-dialog">
+    <button class="loc-close" id="locClose">✕</button>
+    <div class="loc-head">📍 定位功能说明</div>
+    <div class="loc-body" id="locBody"></div>
+    <button class="loc-ok" id="locOk">知道了，开始使用</button>
+  </div>
+</div>
+
 <!-- 底部导航 -->
 <nav class="tabbar">
-  <a data-page="home"><span>🏠</span>首页</a>
-  <a class="on" data-page="map"><span>🗺️</span>地图</a>
-  <a data-page="guide"><span>📜</span>攻略</a>
-  <a data-page="me"><span>👤</span>我的</a>
+  <a href="./home.html"><span>🏠</span>首页</a>
+  <a class="on" href="./index.html"><span>🗺️</span>地图</a>
+  <a href="./guide.html"><span>📜</span>攻略</a>
+  <a href="./food.html"><span>🍜</span>美食</a>
+  <a href="./me.html"><span>👤</span>我的</a>
+  <a href="./about.html"><span>🏮</span>关于</a>
 </nav>
 
 <div id="toast"></div>
@@ -1018,13 +1082,33 @@ $("#locateBtn").onclick = () => {
   }
 };
 
-/* ---------- 底部导航（预留扩展） ---------- */
-document.querySelectorAll(".tabbar a").forEach(a => {
-  a.onclick = () => {
-    if (a.classList.contains("on")) return;
-    toast(`「${a.textContent.slice(1)}」功能开发中，下一版上线，敬请期待 🚧`);
-  };
-});
+/* ---------- 开场定位说明弹窗 ---------- */
+(function () {
+  const mask = document.getElementById("locMask");
+  const body = document.getElementById("locBody");
+  const isMobile = 'ontouchstart' in window || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (isMobile) {
+    body.innerHTML =
+      '<div class="pt"><span class="e">📱</span><div><b>你正在使用手机，可直接精确定位</b>' +
+      '<p>点击 📍 定位按钮并在弹窗中选择"允许"，即可使用 GPS 卫星实时定位（误差 10~50 米）。建议开启移动数据流量，定位更快更准。</p></div></div>' +
+      '<div class="pt"><span class="e">💡</span><div><p>若定位被拒绝过，请到浏览器设置中把本站位置权限改为"允许"。</p></div></div>';
+  } else {
+    body.innerHTML =
+      '<div class="pt"><span class="e">🖥️</span><div><b>电脑端无法精确定位</b>' +
+      '<p>台式电脑与多数笔记本没有 GPS 硬件，浏览器仅能通过 IP 估算位置，可能出现数百公里偏差（除非电脑插有 USB GPS 接收器）。</p></div></div>' +
+      '<div class="pt"><span class="e">📱</span><div><b>请通过手机进行实时定位</b>' +
+      '<p>用手机浏览器打开本应用，点 📍 允许定位，即可获得卫星级精度（10~50 米）。</p></div></div>' +
+      '<div class="pt"><span class="e">👆</span><div><b>电脑临时方案：手动选点</b>' +
+      '<p>点 📍 后在地图上点选你的真实位置，各景点距离计算同样精准可用。</p></div></div>';
+  }
+  const close = () => mask.classList.remove("show");
+  document.getElementById("locClose").onclick = close;
+  document.getElementById("locOk").onclick = close;
+  mask.onclick = (e) => { if (e.target === mask) close(); };
+  if (!sessionStorage.getItem("qfuLocTip")) mask.classList.add("show");
+  sessionStorage.setItem("qfuLocTip", "1");
+})();
+
 </script>
 </body>
 </html>

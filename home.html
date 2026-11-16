@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>曲阜旅游指南 · 首页</title>
+<style>
+  :root {
+    --gold: #f5c042;
+    --gold2: #ffdd85;
+    --red: #a8352a;
+    --ink: #3a2c1e;
+    --paper: #fbf6ec;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--paper); color: var(--ink);
+    max-width: 560px; margin: 0 auto; min-height: 100vh; padding-bottom: 78px;
+    background-image: radial-gradient(rgba(168, 53, 42, .05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* ===== 主横幅 ===== */
+  .hero {
+    position: relative; overflow: hidden; text-align: center;
+    background: linear-gradient(150deg, #6e1a12 0%, #a8352a 50%, #c96b2e 100%);
+    color: #fff7e8; padding: 46px 20px 40px;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(245, 192, 66, .35), transparent 42%),
+      radial-gradient(circle at 88% 82%, rgba(255, 130, 80, .3), transparent 46%);
+  }
+  .hero > * { position: relative; }
+  .hero .logo {
+    width: 84px; height: 84px; margin: 0 auto; border-radius: 26px; font-size: 44px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    box-shadow: 0 12px 32px rgba(245, 192, 66, .45), inset 0 2px 6px rgba(255, 255, 255, .5);
+    animation: breathe 3.2s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100% { transform: scale(1) rotate(-2deg); } 50% { transform: scale(1.08) rotate(2deg); } }
+  .hero h1 {
+    margin-top: 18px; font-size: 34px; font-weight: 900; letter-spacing: 4px;
+    background: linear-gradient(90deg, #fff 20%, var(--gold2) 55%, var(--gold) 80%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200% auto; animation: shine 3.5s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .hero .en { margin-top: 6px; font-size: 11px; letter-spacing: 6px; color: var(--gold2); }
+  .hero .desc { margin-top: 12px; font-size: 13px; opacity: .9; line-height: 1.8; }
+  .hero .desc b { color: var(--gold2); }
+  .ctas { margin-top: 18px; display: flex; gap: 12px; justify-content: center; }
+  .ctas a {
+    text-decoration: none; font-size: 13px; font-weight: 800; padding: 11px 22px; border-radius: 999px;
+    transition: transform .15s;
+  }
+  .ctas a:active { transform: scale(.94); }
+  .cta-gold { background: linear-gradient(90deg, var(--gold), var(--gold2)); color: #5a3200; box-shadow: 0 6px 18px rgba(245, 192, 66, .4); }
+  .cta-ghost { color: #ffe9b0; border: 1.5px solid rgba(245, 192, 66, .6); background: rgba(0, 0, 0, .18); }
+  /* 浮动装饰 */
+  .float-emo { position: absolute; opacity: .45; animation: floaty 4.5s ease-in-out infinite; }
+  .fe1 { font-size: 30px; top: 22px; left: 12%; }
+  .fe2 { font-size: 22px; top: 60px; right: 12%; animation-delay: 1s; }
+  .fe3 { font-size: 24px; bottom: 60px; left: 8%; animation-delay: 2s; }
+  .fe4 { font-size: 26px; bottom: 26px; right: 10%; animation-delay: 3s; }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-12px) rotate(10deg); } }
+  /* ===== 圣城数据条 ===== */
+  .statbar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 16px 16px 0; gap: 10px; }
+  .st {
+    background: #fff; border: 1px solid #eee2c8; border-radius: 16px; text-align: center;
+    padding: 12px 4px; animation: pop .5s both;
+  }
+  .st b { display: block; font-size: 20px; font-weight: 900; background: linear-gradient(90deg, var(--red), #d0782e); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .st span { font-size: 11px; color: #8a7657; }
+  /* ===== 论语横条 ===== */
+  .quote {
+    margin: 14px 16px 0; padding: 15px 18px; border-radius: 16px; text-align: center;
+    background: linear-gradient(90deg, #f8e7c2, #f3d9a4); border: 1px solid #e2c07a;
+    animation: pop .5s .1s both;
+  }
+  .quote .qt { font-size: 16px; font-weight: 800; color: #7a4a12; letter-spacing: 2px; }
+  .quote .qs { margin-top: 5px; font-size: 11px; color: #a08b64; }
+  .quote .tap { margin-top: 6px; font-size: 10px; color: #b39a6a; animation: blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+  /* ===== 功能入口 ===== */
+  .sect { padding: 26px 16px 6px; display: flex; align-items: center; gap: 8px; }
+  .sect h2 { font-size: 18px; font-weight: 900; }
+  .sect .orn { color: var(--gold); }
+  .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 16px 0; }
+  .mcard {
+    position: relative; overflow: hidden; border-radius: 20px; padding: 18px 16px; color: #fff;
+    text-decoration: none; display: block; animation: pop .5s both; transition: transform .15s;
+  }
+  .mcard:active { transform: scale(.96); }
+  .mcard::after {
+    content: ""; position: absolute; right: -30px; top: -30px; width: 100px; height: 100px;
+    border-radius: 50%; background: radial-gradient(rgba(255, 255, 255, .25), transparent 70%);
+  }
+  .mcard .me { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .25)); }
+  .mcard b { display: block; margin-top: 10px; font-size: 16px; font-weight: 900; }
+  .mcard p { margin-top: 5px; font-size: 11px; line-height: 1.6; opacity: .88; }
+  .mcard .go {
+    position: absolute; right: 14px; bottom: 12px; font-size: 11px; font-weight: 800;
+    color: #fff; background: rgba(0, 0, 0, .22); padding: 4px 10px; border-radius: 999px;
+  }
+  .mc1 { background: linear-gradient(135deg, #8a2418, #c05a2e); box-shadow: 0 8px 22px rgba(168, 53, 42, .35); }
+  .mc2 { background: linear-gradient(135deg, #2e5a3a, #57833f); box-shadow: 0 8px 22px rgba(70, 120, 60, .35); }
+  .mc3 { background: linear-gradient(135deg, #9a4a1e, #d0782e); box-shadow: 0 8px 22px rgba(180, 100, 40, .35); }
+  .mc4 { background: linear-gradient(135deg, #5a3a7a, #8a5aa8); box-shadow: 0 8px 22px rgba(110, 70, 150, .35); }
+  .mc5 { background: linear-gradient(135deg, #1f5a7a, #2e8ba8); box-shadow: 0 8px 22px rgba(50, 110, 150, .35); }
+  @keyframes pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  /* ===== 三孔必看 ===== */
+  .must { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 16px 0; }
+  .mst {
+    background: #fff; border: 1px solid #eee2c8; border-radius: 16px; padding: 14px 10px; text-align: center;
+    animation: pop .5s both; transition: transform .15s;
+  }
+  .mst:active { transform: scale(.96); }
+  .mst .me { font-size: 28px; }
+  .mst b { display: block; margin-top: 6px; font-size: 14px; }
+  .mst .lv { display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 800; color: #fff; padding: 2px 8px; border-radius: 999px; background: linear-gradient(90deg, var(--red), #d0782e); }
+  .mst p { margin-top: 6px; font-size: 10px; color: #8a7657; line-height: 1.6; }
+  .foot-note { text-align: center; font-size: 11px; color: #b3a488; padding: 24px 0 10px; line-height: 2; }
+  /* ===== 底部导航 ===== */
+  .tabbar {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 560px;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
+    border-top: 1px solid #eee0c2; z-index: 99;
+  }
+  .tabbar a { text-align: center; padding: 8px 0 7px; text-decoration: none; color: #9a8a70; font-size: 10px; }
+  .tabbar a span { display: block; font-size: 18px; margin-bottom: 2px; filter: grayscale(60%); }
+  .tabbar a.on { color: var(--red); font-weight: 700; }
+  .tabbar a.on span { filter: none; transform: scale(1.12); }
+  @media (min-width: 1024px) {
+    body { max-width: 720px; }
+    .tabbar { max-width: 720px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="float-emo fe1">🏯</div>
+  <div class="float-emo fe2">🏮</div>
+  <div class="float-emo fe3">📜</div>
+  <div class="float-emo fe4">🍜</div>
+  <div class="logo">🏮</div>
+  <h1>曲阜旅游指南</h1>
+  <div class="en">QUFU TRAVEL GUIDE</div>
+  <div class="desc">孔子故里 · 东方圣城<br>一部手机，<b>把三千年圣城装进口袋</b></div>
+  <div class="ctas">
+    <a class="cta-gold" href="./index.html">🗺️ 打开地图</a>
+    <a class="cta-ghost" href="./guide.html">📜 行程攻略</a>
+  </div>
+  <div style="margin-top:14px;display:inline-block;font-size:11px;padding:5px 14px;border-radius:999px;background:rgba(0,0,0,.25);border:1px solid rgba(245,192,66,.45);color:#ffe9b0;">
+    📱 移动优先设计 · 建议用手机端打开，体验最佳
+  </div>
+</header>
+
+<div class="statbar">
+  <div class="st" style="animation-delay:.1s"><b>3000<small style="font-size:11px">+</small></b><span>年建城史</span></div>
+  <div class="st" style="animation-delay:.16s"><b>10</b><span>核心景点</span></div>
+  <div class="st" style="animation-delay:.22s"><b>8</b><span>必吃美食</span></div>
+  <div class="st" style="animation-delay:.28s"><b>2</b><span>经典路线</span></div>
+</div>
+
+<div class="quote" id="quoteCard">
+  <div class="qt" id="qt">❝ 有朋自远方来，不亦乐乎 ❞</div>
+  <div class="qs" id="qs">—— 《论语 · 学而》</div>
+  <div class="tap">👆 轻点换一句圣人之言</div>
+</div>
+
+<div class="sect"><span class="orn">❖</span><h2>功能导航</h2></div>
+<div class="menu">
+  <a class="mcard mc1" href="./index.html" style="animation-delay:.1s">
+    <div class="me">🗺️</div><b>地图导览</b>
+    <p>10 大景点定位标注 · 智能定位测距 · 一键导航</p>
+    <span class="go">进入 ›</span>
+  </a>
+  <a class="mcard mc2" href="./guide.html" style="animation-delay:.16s">
+    <div class="me">📜</div><b>行程攻略</b>
+    <p>一日/两日游路线 · 门票速查 · 交通指南 · 避坑贴士</p>
+    <span class="go">进入 ›</span>
+  </a>
+  <a class="mcard mc3" href="./food.html" style="animation-delay:.22s">
+    <div class="me">🍜</div><b>圣城食光</b>
+    <p>孔府宴 · 熏豆腐 · 粥泡羊肉 · 夜市烟火气</p>
+    <span class="go">进入 ›</span>
+  </a>
+  <a class="mcard mc4" href="./about.html" style="animation-delay:.28s">
+    <div class="me">🏮</div><b>关于作品</b>
+    <p>功能清单 · 技术架构 · 定位使用建议</p>
+    <span class="go">进入 ›</span>
+  </a>
+  <a class="mcard mc5" href="./me.html" style="animation-delay:.34s">
+    <div class="me">👤</div><b>个人主页</b>
+    <p>旅行等级 · 收藏足迹 · 登录功能敬请期待</p>
+    <span class="go">进入 ›</span>
+  </a>
+</div>
+
+<div class="sect"><span class="orn">❖</span><h2>三孔必看</h2></div>
+<div class="must">
+  <div class="mst" style="animation-delay:.1s">
+    <div class="me">🏯</div><b>孔庙</b>
+    <span class="lv">5A · 必去</span>
+    <p>历代祭祀孔子的至圣庙宇，大成殿巍然</p>
+  </div>
+  <div class="mst" style="animation-delay:.18s">
+    <div class="me">🏡</div><b>孔府</b>
+    <span class="lv">5A · 必去</span>
+    <p>孔子嫡裔世代居住的"天下第一家"</p>
+  </div>
+  <div class="mst" style="animation-delay:.26s">
+    <div class="me">🌳</div><b>孔林</b>
+    <span class="lv">5A · 必去</span>
+    <p>孔氏家族墓地，十万墓碑的千年圣林</p>
+  </div>
+</div>
+
+<div class="foot-note">
+  曲阜旅游指南 · 首页 🏠<br>
+  德不孤，必有邻 —— 《论语 · 里仁》
+</div>
+
+<nav class="tabbar">
+  <a class="on" href="./home.html"><span>🏠</span>首页</a>
+  <a href="./index.html"><span>🗺️</span>地图</a>
+  <a href="./guide.html"><span>📜</span>攻略</a>
+  <a href="./food.html"><span>🍜</span>美食</a>
+  <a href="./me.html"><span>👤</span>我的</a>
+  <a href="./about.html"><span>🏮</span>关于</a>
+</nav>
+
+<script>
+  // 今日圣言：轻点换一句
+  const quotes = [
+    ["❝ 有朋自远方来，不亦乐乎 ❞", "—— 《论语 · 学而》"],
+    ["❝ 学而时习之，不亦说乎 ❞", "—— 《论语 · 学而》"],
+    ["❝ 己所不欲，勿施于人 ❞", "—— 《论语 · 颜渊》"],
+    ["❝ 三人行，必有我师焉 ❞", "—— 《论语 · 述而》"],
+    ["❝ 知之为知之，不知为不知，是知也 ❞", "—— 《论语 · 为政》"],
+    ["❝ 食不厌精，脍不厌细 ❞", "—— 《论语 · 乡党》"],
+    ["❝ 温故而知新，可以为师矣 ❞", "—— 《论语 · 为政》"],
+    ["❝ 逝者如斯夫，不舍昼夜 ❞", "—— 《论语 · 子罕》"]
+  ];
+  let qi = 0;
+  const qt = document.getElementById("qt"), qs = document.getElementById("qs");
+  document.getElementById("quoteCard").onclick = () => {
+    qi = (qi + 1) % quotes.length;
+    qt.style.transition = "opacity .18s";
+    qt.style.opacity = 0; qs.style.opacity = 0;
+    setTimeout(() => {
+      qt.textContent = quotes[qi][0];
+      qs.textContent = quotes[qi][1];
+      qt.style.opacity = 1; qs.style.opacity = 1;
+    }, 180);
+  };
+</script>
+</body>
+</html>

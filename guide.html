@@ -37,6 +37,19 @@
     background-size: 200% auto; animation: shine 3.5s linear infinite;
   }
   @keyframes shine { to { background-position: 200% center; } }
+  .float-emo { position: absolute; font-size: 26px; opacity: .5; animation: floaty 4s ease-in-out infinite; }
+  .fe1 { top: 16px; right: 18px; }
+  .fe2 { top: 58px; right: 66px; font-size: 20px; animation-delay: 1s; }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-10px) rotate(8deg); } }
+  /* ===== 祭孔大典横幅 ===== */
+  .banner-card {
+    margin: 14px 16px 0; border-radius: 16px; padding: 14px 16px; display: flex; gap: 12px; align-items: center;
+    background: linear-gradient(90deg, #7a1f18, #a8352a); color: #ffe9b0;
+    box-shadow: 0 8px 20px rgba(168, 53, 42, .3); animation: pop .5s both;
+  }
+  .banner-card .be { font-size: 30px; animation: floaty 3s ease-in-out infinite; }
+  .banner-card b { font-size: 14px; color: var(--gold2); }
+  .banner-card p { margin-top: 4px; font-size: 12px; line-height: 1.7; opacity: .9; }
   .sub { margin-top: 6px; font-size: 13px; opacity: .88; }
   .stats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
   .stats span {
@@ -129,7 +142,7 @@
   .tabbar {
     position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 100%; max-width: 560px;
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(6, 1fr);
     background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
     border-top: 1px solid #eee0c2; z-index: 99;
   }
@@ -146,6 +159,8 @@
 <body>
 
 <header class="hero">
+  <div class="float-emo fe1">🧳</div>
+  <div class="float-emo fe2">⛩️</div>
   <div class="eyebrow">QUFU · 行程锦囊</div>
   <h1>曲阜攻略</h1>
   <div class="sub">三孔怎么逛 · 票怎么买 · 车怎么坐，一页全搞定</div>
@@ -156,6 +171,14 @@
     <span>💡 8 条避坑贴士</span>
   </div>
 </header>
+
+<div class="banner-card">
+  <div class="be">🏮</div>
+  <div>
+    <b>9·28 祭孔大典 · 此生必看一次</b>
+    <p>每年孔子诞辰日，明故城举行传承千年的祭孔大典。若恰逢九月末来访，这是曲阜最震撼的时刻——务必提前订房购票。</p>
+  </div>
+</div>
 
 <div class="sect"><span class="orn">❖</span><h2>经典行程</h2></div>
 
@@ -240,9 +263,11 @@
 <div class="foot-note">曲阜旅游指南 · 攻略页 📜 · 有朋自远方来，不亦乐乎</div>
 
 <nav class="tabbar">
+  <a href="./home.html"><span>🏠</span>首页</a>
   <a href="./index.html"><span>🗺️</span>地图</a>
   <a class="on" href="./guide.html"><span>📜</span>攻略</a>
   <a href="./food.html"><span>🍜</span>美食</a>
+  <a href="./me.html"><span>👤</span>我的</a>
   <a href="./about.html"><span>🏮</span>关于</a>
 </nav>
 

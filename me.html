@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>我的 · 曲阜旅游指南</title>
+<style>
+  :root {
+    --gold: #f5c042;
+    --gold2: #ffdd85;
+    --red: #a8352a;
+    --ink: #3a2c1e;
+    --paper: #fbf6ec;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--paper); color: var(--ink);
+    max-width: 560px; margin: 0 auto; min-height: 100vh; padding-bottom: 78px;
+    background-image: radial-gradient(rgba(168, 53, 42, .05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .hero {
+    background: linear-gradient(150deg, #5a1e5a, #8a356a 45%, #b3547a 100%);
+    color: #fff5f0; padding: 40px 20px 30px; position: relative; overflow: hidden; text-align: center;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(245, 192, 66, .35), transparent 42%),
+      radial-gradient(circle at 85% 80%, rgba(255, 130, 150, .3), transparent 45%);
+  }
+  .hero > * { position: relative; }
+  .avatar {
+    width: 86px; height: 86px; margin: 0 auto; border-radius: 50%; font-size: 44px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    border: 4px solid rgba(255, 255, 255, .35);
+    box-shadow: 0 12px 30px rgba(245, 192, 66, .45);
+    animation: breathe 3.2s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+  .hero h1 { margin-top: 14px; font-size: 22px; font-weight: 900; }
+  .hero .idchip {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+    font-size: 11px; padding: 5px 14px; border-radius: 999px;
+    background: rgba(0, 0, 0, .25); border: 1px solid rgba(245, 192, 66, .45); color: #ffe9b0;
+  }
+  .lvline { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; }
+  .lv {
+    font-size: 12px; font-weight: 900; color: #5a3200; padding: 4px 12px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2)); box-shadow: 0 4px 14px rgba(245, 192, 66, .4);
+  }
+  .lvname { font-size: 12px; opacity: .85; }
+  /* ===== 登录公告 ===== */
+  .loginbox {
+    margin: 16px 16px 0; border-radius: 18px; overflow: hidden;
+    background: #fff; border: 1.5px solid #e2c07a;
+    box-shadow: 0 6px 20px rgba(226, 192, 122, .35); animation: pop .5s .1s both;
+  }
+  .loginbox .lh {
+    padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(90deg, #7a5a1a, #a0762a); color: #ffefc8; font-weight: 800; font-size: 14px;
+  }
+  .loginbox .lb { padding: 14px 16px; font-size: 12px; color: #6b5a42; line-height: 1.9; }
+  .loginbox .lb b { color: var(--red); }
+  /* ===== 数据条 ===== */
+  .statbar { display: grid; grid-template-columns: repeat(3, 1fr); margin: 14px 16px 0; gap: 10px; }
+  .st {
+    background: #fff; border: 1px solid #eee2c8; border-radius: 16px; text-align: center;
+    padding: 13px 4px; animation: pop .5s both;
+  }
+  .st b { display: block; font-size: 20px; font-weight: 900; color: #8a356a; }
+  .st span { font-size: 11px; color: #8a7657; }
+  /* ===== 等级进度 ===== */
+  .sect { padding: 24px 16px 8px; display: flex; align-items: center; gap: 8px; }
+  .sect h2 { font-size: 18px; font-weight: 900; }
+  .sect .orn { color: var(--gold); }
+  .lvcard {
+    margin: 10px 16px 0; background: #fff; border: 1px solid #eee2c8; border-radius: 18px;
+    padding: 16px; box-shadow: 0 4px 14px rgba(120, 80, 30, .07); animation: pop .5s both;
+  }
+  .lvhead { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+  .lvhead b { color: var(--red); }
+  .lvhead span { font-size: 11px; color: #a08b64; }
+  .bar { margin-top: 10px; height: 12px; border-radius: 999px; background: #f3ecd9; overflow: hidden; position: relative; }
+  .bar .fill {
+    height: 100%; width: 0; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+    background-size: 200% auto; animation: grow 1.2s .3s forwards, shine 2.5s 1.5s linear infinite;
+    box-shadow: 0 0 10px rgba(245, 192, 66, .5);
+  }
+  @keyframes grow { to { width: 32%; } }
+  @keyframes shine { to { background-position: 200% center; } }
+  .lvtable { margin-top: 14px; display: grid; gap: 8px; }
+  .lvrow { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .lvrow .n {
+    flex: none; width: 34px; font-weight: 900; font-size: 11px; text-align: center;
+    padding: 3px 0; border-radius: 8px; background: #fdf3dd; color: #9a7519; border: 1px solid #f0dfb2;
+  }
+  .lvrow.now .n { background: linear-gradient(90deg, var(--gold), var(--gold2)); color: #5a3200; border-color: transparent; }
+  .lvrow s { color: #b3a488; }
+  /* ===== 功能宫格 ===== */
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 16px 0; }
+  .g {
+    background: #fff; border: 1px solid #eee2c8; border-radius: 16px; padding: 14px 8px;
+    text-align: center; animation: pop .5s both; cursor: pointer; transition: transform .15s;
+  }
+  .g:active { transform: scale(.95); }
+  .g .e { font-size: 26px; }
+  .g b { display: block; margin-top: 6px; font-size: 12px; }
+  .g .tag {
+    display: inline-block; margin-top: 5px; font-size: 9px; font-weight: 700;
+    color: #a06a1a; background: #fdf3dd; border: 1px dashed #e2c07a; padding: 2px 8px; border-radius: 999px;
+  }
+  @keyframes pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .foot-note { text-align: center; font-size: 11px; color: #b3a488; padding: 24px 0 10px; line-height: 2; }
+  /* ===== Toast ===== */
+  #toast {
+    position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+    background: rgba(58, 44, 30, .92); color: #ffefc8; font-size: 12px;
+    padding: 10px 18px; border-radius: 999px; opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 999; white-space: nowrap;
+    border: 1px solid rgba(245, 192, 66, .5);
+  }
+  #toast.show { opacity: 1; }
+  /* ===== 底部导航 ===== */
+  .tabbar {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 560px;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
+    border-top: 1px solid #eee0c2; z-index: 99;
+  }
+  .tabbar a { text-align: center; padding: 8px 0 7px; text-decoration: none; color: #9a8a70; font-size: 10px; }
+  .tabbar a span { display: block; font-size: 18px; margin-bottom: 2px; filter: grayscale(60%); }
+  .tabbar a.on { color: var(--red); font-weight: 700; }
+  .tabbar a.on span { filter: none; transform: scale(1.12); }
+  @media (min-width: 1024px) {
+    body { max-width: 720px; }
+    .tabbar { max-width: 720px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="avatar">🧳</div>
+  <h1>圣城旅人</h1>
+  <div class="idchip">🎟️ 游客身份 · 免登录浏览</div>
+  <div class="lvline">
+    <span class="lv">Lv.1</span>
+    <span class="lvname">初至圣城</span>
+  </div>
+</header>
+
+<div class="loginbox">
+  <div class="lh">🔒 关于登录功能</div>
+  <div class="lb">
+    <b>本版本暂不提供登录功能。</b>
+    个人主页目前为<b>框架预览</b>——账号体系涉及用户数据存储与后端服务，规划在后续版本中上线。
+    当前应用内所有功能均以游客身份直接使用，完整体验不受影响。
+  </div>
+</div>
+
+<div class="statbar">
+  <div class="st" style="animation-delay:.1s"><b>0<span style="font-size:11px">/10</span></b><span>景点足迹</span></div>
+  <div class="st" style="animation-delay:.16s"><b>0</b><span>我的收藏</span></div>
+  <div class="st" style="animation-delay:.22s"><b>6<span style="font-size:11px">/6</span></b><span>已浏览页面</span></div>
+</div>
+
+<div class="sect"><span class="orn">❖</span><h2>旅行者等级</h2></div>
+<div class="lvcard" style="animation-delay:.2s">
+  <div class="lvhead"><b>Lv.1 初至圣城</b><span>距离 Lv.2 还差 3 个景点打卡</span></div>
+  <div class="bar"><div class="fill"></div></div>
+  <div class="lvtable">
+    <div class="lvrow now"><span class="n">Lv.1</span><span>初至圣城 · 打开应用即达成</span></div>
+    <div class="lvrow"><span class="n">Lv.2</span><span>寻迹之旅 · 打卡 3 处景点</span></div>
+    <div class="lvrow"><span class="n">Lv.3</span><span>三孔门生 · 打卡 6 处景点</span></div>
+    <div class="lvrow"><span class="n">Lv.4</span><span>圣城常客 · 打卡 9 处景点</span></div>
+    <div class="lvrow"><span class="n">Lv.5</span><span>圣城通 · 打卡全部景点 + 品尝 8 道美食</span></div>
+  </div>
+</div>
+
+<div class="sect"><span class="orn">❖</span><h2>个人功能</h2></div>
+<div class="grid" id="grid">
+  <div class="g" style="animation-delay:.1s"><span class="e">⭐</span><b>我的收藏</b><span class="tag">🚧 敬请期待</span></div>
+  <div class="g" style="animation-delay:.14s"><span class="e">👣</span><b>足迹打卡</b><span class="tag">🚧 敬请期待</span></div>
+  <div class="g" style="animation-delay:.18s"><span class="e">🎫</span><b>电子票夹</b><span class="tag">🚧 敬请期待</span></div>
+  <div class="g" style="animation-delay:.22s"><span class="e">🗺️</span><b>常用路线</b><span class="tag">🚧 敬请期待</span></div>
+  <div class="g" style="animation-delay:.26s"><span class="e">⚙️</span><b>偏好设置</b><span class="tag">🚧 敬请期待</span></div>
+  <div class="g" style="animation-delay:.3s"><span class="e">📝</span><b>意见反馈</b><span class="tag">🚧 敬请期待</span></div>
+</div>
+
+<div class="foot-note">
+  曲阜旅游指南 · 我的 👤<br>
+  譬如为山，未成一篑，止，吾止也 —— 《论语 · 子罕》
+</div>
+
+<div id="toast"></div>
+
+<nav class="tabbar">
+  <a href="./home.html"><span>🏠</span>首页</a>
+  <a href="./index.html"><span>🗺️</span>地图</a>
+  <a href="./guide.html"><span>📜</span>攻略</a>
+  <a href="./food.html"><span>🍜</span>美食</a>
+  <a class="on" href="./me.html"><span>👤</span>我的</a>
+  <a href="./about.html"><span>🏮</span>关于</a>
+</nav>
+
+<script>
+  // 功能宫格点击提示
+  const toast = document.getElementById("toast");
+  let toastTimer = null;
+  document.querySelectorAll(".g").forEach(g => {
+    g.onclick = () => {
+      toast.textContent = "🔒 " + g.querySelector("b").textContent + " 将随登录功能一同上线";
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+    };
+  });
+</script>
+</body>
+</html>

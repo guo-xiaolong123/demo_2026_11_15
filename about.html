@@ -103,7 +103,7 @@
   .tabbar {
     position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 100%; max-width: 560px;
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(6, 1fr);
     background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
     border-top: 1px solid #eee0c2; z-index: 99;
   }
@@ -136,6 +136,7 @@
     <div class="fi"><span class="ck">✓</span><div><b>一键导航</b><p>景点详情内"导航前往"直达高德导航路线规划。</p></div></div>
     <div class="fi"><span class="ck">✓</span><div><b>攻略中心</b><p>经典一日游 / 两日游时间轴、门票速查表、交通指南与避坑贴士。</p></div></div>
     <div class="fi"><span class="ck">✓</span><div><b>曲阜食光</b><p>孔府宴、熏豆腐、粥泡羊肉等 8+ 道必吃美食，支持分类筛选。</p></div></div>
+    <div class="fi"><span class="ck">✓</span><div><b>个人主页框架</b><p>旅行者等级体系与功能宫格预览，登录功能规划于后续版本上线（当前暂不提供）。</p></div></div>
     <div class="fi"><span class="ck">✓</span><div><b>全端自适应</b><p>手机 / 电脑双布局自动切换，移动优先设计。</p></div></div>
     <div class="fi"><span class="ck">✓</span><div><b>故障自检</b><p>地图加载异常时自动在页面内显示具体原因，拒绝"神秘白屏"。</p></div></div>
   </div>
@@ -175,9 +176,11 @@
 </div>
 
 <nav class="tabbar">
+  <a href="./home.html"><span>🏠</span>首页</a>
   <a href="./index.html"><span>🗺️</span>地图</a>
   <a href="./guide.html"><span>📜</span>攻略</a>
   <a href="./food.html"><span>🍜</span>美食</a>
+  <a href="./me.html"><span>👤</span>我的</a>
   <a class="on" href="./about.html"><span>🏮</span>关于</a>
 </nav>
 
