@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>曲阜食光 · 曲阜旅游指南</title>
+<style>
+  :root {
+    --gold: #f5c042;
+    --gold2: #ffdd85;
+    --red: #a8352a;
+    --ink: #3a2c1e;
+    --paper: #fbf6ec;
+    --pink: #e65c5c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 100%;
+    padding-bottom: 76px;
+    background-image: radial-gradient(rgba(168, 53, 42, .05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* ===== 顶部横幅 ===== */
+  .hero {
+    position: relative;
+    background: linear-gradient(140deg, #7a1f18 0%, #a8352a 55%, #c05a2e 100%);
+    color: #fff7e8;
+    padding: 34px 20px 30px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(245, 192, 66, .35), transparent 40%),
+      radial-gradient(circle at 10% 90%, rgba(255, 120, 80, .3), transparent 45%);
+  }
+  .hero > * { position: relative; }
+  .hero .eyebrow { font-size: 12px; letter-spacing: 4px; color: var(--gold2); opacity: .9; }
+  .hero h1 {
+    margin-top: 6px;
+    font-size: 30px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #fff, var(--gold2) 60%, var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% auto;
+    animation: shine 3.5s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .hero .sub { margin-top: 6px; font-size: 13px; opacity: .85; line-height: 1.7; }
+  .hero .sub b { color: var(--gold2); }
+  .float-emo { position: absolute; font-size: 26px; opacity: .5; animation: floaty 4s ease-in-out infinite; }
+  .fe1 { top: 16px; right: 18px; animation-delay: 0s; }
+  .fe2 { top: 60px; right: 70px; font-size: 20px; animation-delay: 1s; }
+  .fe3 { bottom: 18px; right: 40px; font-size: 22px; animation-delay: 2s; }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-10px) rotate(8deg); } }
+  .stats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .stats span {
+    font-size: 12px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(0, 0, 0, .25); border: 1px solid rgba(245, 192, 66, .4); color: #ffe9b0;
+  }
+  /* ===== 孔子语录横条 ===== */
+  .quote {
+    margin: 16px 16px 0;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #f8e7c2, #f3d9a4);
+    border: 1px solid #e2c07a;
+    text-align: center;
+    font-size: 15px; font-weight: 700; color: #7a4a12;
+    letter-spacing: 2px;
+    position: relative;
+  }
+  .quote small { display: block; margin-top: 4px; font-size: 11px; font-weight: 400; opacity: .7; letter-spacing: 1px; }
+  /* ===== 分类筛选 ===== */
+  .chips { display: flex; gap: 8px; padding: 16px 16px 4px; overflow-x: auto; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; padding: 7px 14px; font-size: 13px; border-radius: 999px; cursor: pointer;
+    background: #fff; border: 1px solid #e5d9c3; color: #6b5a42; transition: all .2s;
+  }
+  .chip.on { background: linear-gradient(90deg, var(--red), #c05a2e); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(168, 53, 42, .3); }
+  /* ===== 孔府宴大卡 ===== */
+  .feat {
+    margin: 14px 16px 0; border-radius: 18px; overflow: hidden; position: relative;
+    background: linear-gradient(135deg, #2e1a0e, #7a3b1a 60%, #b3541e);
+    color: #fff3dd; padding: 20px 18px;
+    box-shadow: 0 10px 26px rgba(90, 40, 10, .35);
+    animation: pop .5s .15s both;
+  }
+  .feat .badge {
+    display: inline-block; font-size: 11px; padding: 4px 10px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2)); color: #5a3200; font-weight: 800; letter-spacing: 1px;
+  }
+  .feat h2 { margin-top: 10px; font-size: 24px; font-weight: 900; }
+  .feat h2 small { font-size: 12px; font-weight: 400; opacity: .75; margin-left: 8px; }
+  .feat p { margin-top: 8px; font-size: 13px; line-height: 1.8; opacity: .9; }
+  .feat .dishes { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .feat .dishes span { font-size: 12px; padding: 4px 10px; border-radius: 8px; background: rgba(255, 255, 255, .12); border: 1px solid rgba(245, 192, 66, .35); color: var(--gold2); }
+  .feat .row { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .feat .row .price { font-size: 16px; font-weight: 800; color: var(--gold2); }
+  .feat .row .where { opacity: .8; }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  /* ===== 美食卡片 ===== */
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px 6px; }
+  .fcard {
+    background: #fff; border-radius: 16px; padding: 16px 14px 14px;
+    border: 1px solid #eee2c8; box-shadow: 0 4px 14px rgba(120, 80, 30, .07);
+    animation: pop .5s both; position: relative; overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .fcard:active { transform: scale(.97); }
+  .fcard::after {
+    content: ""; position: absolute; top: -40px; right: -40px; width: 90px; height: 90px;
+    border-radius: 50%; background: radial-gradient(rgba(245, 192, 66, .18), transparent 70%);
+  }
+  .fcard .emo { font-size: 30px; filter: drop-shadow(0 3px 5px rgba(150, 80, 0, .25)); }
+  .fcard h3 { margin-top: 8px; font-size: 15px; font-weight: 800; }
+  .fcard h3 small { font-weight: 400; font-size: 11px; color: #a08b64; margin-left: 4px; }
+  .fcard .rate { margin-top: 4px; font-size: 11px; color: var(--gold); font-weight: 700; }
+  .fcard .desc { margin-top: 6px; font-size: 12px; line-height: 1.7; color: #6b5a42; }
+  .fcard .foot { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .fcard .price { font-size: 14px; font-weight: 800; color: var(--red); }
+  .fcard .tag { font-size: 10px; padding: 3px 8px; border-radius: 6px; background: #fdf3dd; color: #9a7519; border: 1px solid #f0dfb2; }
+  .fcard.hide { display: none; }
+  /* ===== 夜市横幅卡 ===== */
+  .night {
+    margin: 12px 16px 0; border-radius: 18px; padding: 18px;
+    background: linear-gradient(135deg, #1d1833, #3b2a5e 60%, #6e2a4a);
+    color: #f2e6ff; display: flex; gap: 14px; align-items: center;
+    box-shadow: 0 10px 26px rgba(40, 20, 70, .3);
+    animation: pop .5s .3s both;
+  }
+  .night .ne { font-size: 38px; animation: floaty 3.5s ease-in-out infinite; }
+  .night h3 { font-size: 17px; font-weight: 900; color: #ffd76a; }
+  .night p { margin-top: 5px; font-size: 12px; line-height: 1.7; opacity: .85; }
+  .night a {
+    flex: none; margin-left: auto; font-size: 12px; font-weight: 700; text-decoration: none;
+    color: #5a3200; background: linear-gradient(90deg, var(--gold), var(--gold2));
+    padding: 8px 14px; border-radius: 999px;
+  }
+  /* ===== 通用区块 ===== */
+  .sect { padding: 22px 16px 6px; display: flex; align-items: center; gap: 8px; }
+  .sect h2 { font-size: 18px; font-weight: 900; }
+  .sect .orn { color: var(--gold); font-size: 14px; }
+  .foot-note { text-align: center; font-size: 11px; color: #b3a488; padding: 18px 0 10px; }
+  /* ===== 底部导航 ===== */
+  .tabbar {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 560px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: rgba(255, 255, 255, .96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #eee0c2;
+    z-index: 99;
+  }
+  .tabbar a {
+    text-align: center; padding: 9px 0 8px; text-decoration: none;
+    color: #9a8a70; font-size: 11px;
+  }
+  .tabbar a span { display: block; font-size: 19px; margin-bottom: 2px; filter: grayscale(60%); }
+  .tabbar a.on { color: var(--red); font-weight: 700; }
+  .tabbar a.on span { filter: none; transform: scale(1.12); }
+  @media (min-width: 1024px) {
+    body { max-width: 720px; }
+    .tabbar { max-width: 720px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="float-emo fe1">🍜</div>
+  <div class="float-emo fe2">🥟</div>
+  <div class="float-emo fe3">🍢</div>
+  <div class="eyebrow">QUFU · 圣城食记</div>
+  <h1>曲阜食光</h1>
+  <div class="sub">孔子故里 · 不仅是精神食粮，<b>舌尖上的曲阜</b>同样惊艳</div>
+  <div class="stats">
+    <span>🍛 8 道必吃</span>
+    <span>🏮 1 条夜市街</span>
+    <span>⭐ 口味实测推荐</span>
+  </div>
+</header>
+
+<div class="quote">
+  ❝ 食不厌精，脍不厌细 ❞
+  <small>—— 孔子《论语 · 乡党》</small>
+</div>
+
+<div class="chips" id="chips">
+  <div class="chip on" data-f="all">✨ 全部</div>
+  <div class="chip" data-f="kongfu">🍽️ 孔府菜</div>
+  <div class="chip" data-f="xiaochi">🌯 街头小吃</div>
+  <div class="chip" data-f="zaocan">🍲 地道早餐</div>
+  <div class="chip" data-f="banli">🎁 伴手礼</div>
+  <div class="chip" data-f="yeshi">🌙 夜市烟火</div>
+</div>
+
+<div class="feat" data-f="kongfu">
+  <span class="badge">镇页之宝 · 中国官府菜之巅</span>
+  <h2>孔府宴 <small>世界非物质文化遗产</small></h2>
+  <p>孔府菜是中国三大官府菜之首，历经千年沉淀，讲究"食不厌精"——一道菜一个典故，一口一味传承。来曲阜不吃孔府宴，等于只逛了一半。</p>
+  <div class="dishes">
+    <span>诗礼银杏</span>
+    <span>一品豆腐</span>
+    <span>神仙鸭子</span>
+    <span>带子上朝</span>
+    <span>八仙过海闹罗汉</span>
+  </div>
+  <div class="row">
+    <span class="price">¥120/人 起</span>
+    <span class="where">📍 推荐：孔府饭店 · 阙里宾舍（需预约）</span>
+  </div>
+</div>
+
+<div class="fgrid" id="fgrid">
+  <div class="fcard" data-f="xiaochi" style="animation-delay:.32s">
+    <div class="emo">🧆</div>
+    <h3>熏豆腐 <small>曲阜独有</small></h3>
+    <div class="rate">★ 4.6 · 必尝榜第 1</div>
+    <div class="desc">豆腐经松木烟熏后小火炖煮，外紧内嫩、烟香入骨，蘸辣椒酱一绝。出了曲阜真吃不到。</div>
+    <div class="foot"><span class="price">¥5~10</span><span class="tag">街头小吃</span></div>
+  </div>
+  <div class="fcard" data-f="zaocan" style="animation-delay:.38s">
+    <div class="emo">🍲</div>
+    <h3>粥泡羊肉 <small>曲阜人早餐图腾</small></h3>
+    <div class="rate">★ 4.7 · 本地人从小吃到大</div>
+    <div class="desc">大锅里滚着小米粥，现切羊肉鲜汤一浇，配刚出炉的吊炉烧饼——曲阜清晨的仪式感。</div>
+    <div class="foot"><span class="price">¥15~25</span><span class="tag">地道早餐</span></div>
+  </div>
+  <div class="fcard" data-f="zaocan" style="animation-delay:.44s">
+    <div class="emo">🥣</div>
+    <h3>糁汤 <small>胡椒香冲</small></h3>
+    <div class="rate">★ 4.6 · 驱寒神器</div>
+    <div class="desc">骨头汤打底，牛肉片滑嫩，胡椒一勺提神醒脑。济宁名吃，配油条是标配吃法。</div>
+    <div class="foot"><span class="price">¥8~15</span><span class="tag">地道早餐</span></div>
+  </div>
+  <div class="fcard" data-f="xiaochi" style="animation-delay:.5s">
+    <div class="emo">🌯</div>
+    <h3>煎饼卷大葱 <small>豪迈鲁味</small></h3>
+    <div class="rate">★ 4.5 · 经典中的经典</div>
+    <div class="desc">曲阜煎饼薄如纸、韧如绸，抹甜面酱卷上章丘大葱，一口下去满嘴麦香——山东人的乡愁。</div>
+    <div class="foot"><span class="price">¥5~15</span><span class="tag">街头小吃</span></div>
+  </div>
+  <div class="fcard" data-f="banli" style="animation-delay:.56s">
+    <div class="emo">🍡</div>
+    <h3>孔府糕点 <small>圣府门第</small></h3>
+    <div class="rate">★ 4.5 · 伴手礼首选</div>
+    <div class="desc">传承数百年的圣府点心：如意饼、长寿糕、孔府煎饼。包装喜庆，带回去送人很有面儿。</div>
+    <div class="foot"><span class="price">¥20~60</span><span class="tag">伴手礼</span></div>
+  </div>
+  <div class="fcard" data-f="xiaochi" style="animation-delay:.62s">
+    <div class="emo">🍖</div>
+    <h3>吊炉烧饼 <small>刚出炉最香</small></h3>
+    <div class="rate">★ 4.6 · 碳水快乐</div>
+    <div class="desc">吊炉烤制，外壳焦脆掉渣、内里绵软分层，麦香扑鼻。配粥泡羊肉是曲阜官方 CP。</div>
+    <div class="foot"><span class="price">¥2~5</span><span class="tag">街头小吃</span></div>
+  </div>
+  <div class="fcard" data-f="yeshi" style="animation-delay:.68s">
+    <div class="emo">🎨</div>
+    <h3>糖画 · 吹糖人 <small>非遗手艺</small></h3>
+    <div class="rate">★ 4.7 · 逛吃氛围组</div>
+    <div class="desc">明故城景区周边常有非遗手艺人现场制作，一支糖画既是零食也是纪念品，小朋友们走不动道。</div>
+    <div class="foot"><span class="price">¥10~20</span><span class="tag">夜市烟火</span></div>
+  </div>
+  <div class="fcard" data-f="yeshi" style="animation-delay:.74s">
+    <div class="emo">🧋</div>
+    <h3>圣城奶茶 · 杏坛特调 <small>打卡饮品</small></h3>
+    <div class="rate">★ 4.3 · 出片神器</div>
+    <div class="desc">五马祠街文创饮品店，杯子印着《论语》金句，拿着拍照发圈，仪式感直接拉满。</div>
+    <div class="foot"><span class="price">¥12~22</span><span class="tag">夜市烟火</span></div>
+  </div>
+</div>
+
+<div class="night" data-f="yeshi">
+  <div class="ne">🌙</div>
+  <div>
+    <h3>五马祠街夜市</h3>
+    <p>天黑才开场的曲阜烟火气总部：炸串、烤面筋、糖葫芦、炒凉粉……从街头吃到街尾，人均 30 元吃到扶墙。</p>
+  </div>
+  <a href="./index.html">🗺️ 地图导航</a>
+</div>
+
+<div class="foot-note">曲阜旅游指南 · 曲阜食光 🍜 · 天下食客，殊途同归</div>
+
+<nav class="tabbar">
+  <a href="./index.html"><span>🗺️</span>地图</a>
+  <a href="./guide.html"><span>📜</span>攻略</a>
+  <a class="on" href="./food.html"><span>🍜</span>美食</a>
+  <a href="./about.html"><span>🏮</span>关于</a>
+</nav>
+
+<script>
+  // 分类筛选
+  const chips = document.querySelectorAll(".chip");
+  chips.forEach(c => c.onclick = () => {
+    chips.forEach(x => x.classList.remove("on"));
+    c.classList.add("on");
+    const f = c.dataset.f;
+    document.querySelectorAll("[data-f]").forEach(card => {
+      const isChips = card.closest("#chips");
+      if (isChips) return;
+      card.classList.toggle("hide", f !== "all" && card.dataset.f !== f);
+    });
+  });
+</script>
+</body>
+</html>

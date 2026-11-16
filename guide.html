@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>曲阜攻略 · 曲阜旅游指南</title>
+<style>
+  :root {
+    --gold: #f5c042;
+    --gold2: #ffdd85;
+    --red: #a8352a;
+    --ink: #3a2c1e;
+    --paper: #fbf6ec;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--paper); color: var(--ink);
+    max-width: 560px; margin: 0 auto; min-height: 100vh; padding-bottom: 76px;
+    background-image: radial-gradient(rgba(168, 53, 42, .05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .hero {
+    background: linear-gradient(140deg, #8a2418, #a8352a 55%, #d0782e);
+    color: #fff7e8; padding: 34px 20px 28px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 88% 12%, rgba(245, 192, 66, .35), transparent 40%);
+  }
+  .hero > * { position: relative; }
+  .eyebrow { font-size: 12px; letter-spacing: 4px; color: var(--gold2); }
+  .hero h1 {
+    margin-top: 6px; font-size: 30px; font-weight: 900;
+    background: linear-gradient(90deg, #fff, var(--gold2) 60%, var(--gold));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200% auto; animation: shine 3.5s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .sub { margin-top: 6px; font-size: 13px; opacity: .88; }
+  .stats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .stats span {
+    font-size: 12px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(0, 0, 0, .25); border: 1px solid rgba(245, 192, 66, .4); color: #ffe9b0;
+  }
+  .sect { padding: 24px 16px 8px; display: flex; align-items: center; gap: 8px; }
+  .sect h2 { font-size: 18px; font-weight: 900; }
+  .sect .orn { color: var(--gold); }
+  /* ===== 路线卡 ===== */
+  .route {
+    margin: 10px 16px 0; background: #fff; border: 1px solid #eee2c8; border-radius: 18px;
+    padding: 18px 16px; box-shadow: 0 4px 14px rgba(120, 80, 30, .07);
+    animation: pop .5s both;
+  }
+  .route .rt-head { display: flex; align-items: center; gap: 10px; }
+  .route .rt-emo {
+    font-size: 24px; width: 46px; height: 46px; display: grid; place-items: center;
+    background: linear-gradient(135deg, #fdf3dd, #f8e7c2); border-radius: 14px;
+    border: 1px solid #f0dfb2;
+  }
+  .route h3 { font-size: 17px; font-weight: 900; }
+  .route h3 small { font-size: 11px; font-weight: 400; color: #a08b64; margin-left: 6px; }
+  .route .rt-sub { font-size: 12px; color: #a08b64; margin-top: 2px; }
+  .route .btn-line { margin-top: 10px; font-size: 12px; color: var(--red); font-weight: 700; }
+  /* 时间轴 */
+  .tl { margin-top: 14px; padding-left: 6px; }
+  .tl-item { display: flex; gap: 12px; position: relative; padding-bottom: 14px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before {
+    content: ""; position: absolute; left: 8px; top: 18px; bottom: 0; width: 2px;
+    background: linear-gradient(#e2c07a, #f0dfb2);
+  }
+  .tl-item:last-child::before { display: none; }
+  .tl-time { flex: none; width: 44px; font-size: 11px; font-weight: 800; color: var(--red); padding-top: 2px; }
+  .tl-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); border: 2px solid #fff; box-shadow: 0 0 0 2px #e2c07a; margin-top: 4px; z-index: 1; }
+  .tl-body b { font-size: 13px; }
+  .tl-body p { font-size: 12px; color: #6b5a42; line-height: 1.6; margin-top: 2px; }
+  /* ===== 门票表 ===== */
+  .ticket {
+    margin: 10px 16px 0; background: #fff; border: 1px solid #eee2c8; border-radius: 18px;
+    overflow: hidden; box-shadow: 0 4px 14px rgba(120, 80, 30, .07);
+  }
+  .ticket table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ticket th { background: linear-gradient(90deg, #a8352a, #c05a2e); color: #ffe9b0; padding: 10px 12px; text-align: left; font-weight: 700; }
+  .ticket td { padding: 10px 12px; border-top: 1px solid #f3ecd9; }
+  .ticket tr td:first-child { font-weight: 800; }
+  .ticket .p { color: var(--red); font-weight: 800; }
+  .ticket .free { color: #2e7d32; font-weight: 800; }
+  .ticket-note { margin: 8px 18px 0; font-size: 11px; color: #a08b64; line-height: 1.7; }
+  /* ===== 交通卡 ===== */
+  .trans { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 16px 0; }
+  .tr-card {
+    background: #fff; border: 1px solid #eee2c8; border-radius: 16px; padding: 14px 10px;
+    text-align: center; animation: pop .5s both;
+  }
+  .tr-card .e { font-size: 26px; }
+  .tr-card b { display: block; margin-top: 6px; font-size: 13px; }
+  .tr-card p { margin-top: 4px; font-size: 11px; color: #6b5a42; line-height: 1.6; }
+  .tr-tip {
+    margin: 10px 16px 0; padding: 12px 14px; border-radius: 14px; font-size: 12px; line-height: 1.8;
+    background: #fdf3dd; border: 1px dashed #e2c07a; color: #7a5a1a;
+  }
+  /* ===== 贴士 ===== */
+  .tips { margin: 10px 16px 0; display: grid; gap: 10px; }
+  .tip {
+    display: flex; gap: 12px; background: #fff; border: 1px solid #eee2c8; border-radius: 14px;
+    padding: 12px 14px; align-items: flex-start; animation: pop .5s both;
+  }
+  .tip .e { font-size: 22px; }
+  .tip b { font-size: 13px; display: block; }
+  .tip p { font-size: 12px; color: #6b5a42; line-height: 1.6; margin-top: 2px; }
+  .season {
+    margin: 10px 16px 0; display: flex; gap: 8px;
+  }
+  .se-card {
+    flex: 1; border-radius: 14px; padding: 12px 8px; text-align: center; color: #fff;
+    animation: pop .5s both;
+  }
+  .se-card .e { font-size: 24px; }
+  .se-card b { display: block; font-size: 12px; margin-top: 4px; }
+  .se-card p { font-size: 10px; opacity: .85; margin-top: 2px; }
+  .se-a { background: linear-gradient(135deg, #e57373, #c05a2e); }
+  .se-b { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
+  .se-c { background: linear-gradient(135deg, #ffb74d, #e08e00); }
+  .se-d { background: linear-gradient(135deg, #90a4ae, #546e7a); }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .foot-note { text-align: center; font-size: 11px; color: #b3a488; padding: 20px 0 10px; }
+  /* ===== 底部导航 ===== */
+  .tabbar {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 560px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
+    border-top: 1px solid #eee0c2; z-index: 99;
+  }
+  .tabbar a { text-align: center; padding: 9px 0 8px; text-decoration: none; color: #9a8a70; font-size: 11px; }
+  .tabbar a span { display: block; font-size: 19px; margin-bottom: 2px; filter: grayscale(60%); }
+  .tabbar a.on { color: var(--red); font-weight: 700; }
+  .tabbar a.on span { filter: none; transform: scale(1.12); }
+  @media (min-width: 1024px) {
+    body { max-width: 720px; }
+    .tabbar { max-width: 720px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">QUFU · 行程锦囊</div>
+  <h1>曲阜攻略</h1>
+  <div class="sub">三孔怎么逛 · 票怎么买 · 车怎么坐，一页全搞定</div>
+  <div class="stats">
+    <span>📅 2 条经典路线</span>
+    <span>🎫 门票速查</span>
+    <span>🚄 交通指南</span>
+    <span>💡 8 条避坑贴士</span>
+  </div>
+</header>
+
+<div class="sect"><span class="orn">❖</span><h2>经典行程</h2></div>
+
+<div class="route" style="animation-delay:.1s">
+  <div class="rt-head">
+    <div class="rt-emo">⏱️</div>
+    <div>
+      <h3>精华一日游 <small>首次必选</small></h3>
+      <div class="rt-sub">一天逛透"三孔"，节奏张弛有度</div>
+    </div>
+  </div>
+  <div class="tl">
+    <div class="tl-item"><span class="tl-time">08:00</span><span class="tl-dot"></span><div class="tl-body"><b>明故城开城仪式</b><p>万仞宫墙前免费观看，气势恢宏，摄影党早到占位</p></div></div>
+    <div class="tl-item"><span class="tl-time">08:30</span><span class="tl-dot"></span><div class="tl-body"><b>孔庙</b><p>至圣先师的祭祀庙宇，大成殿是必看核心，建议 2.5 小时</p></div></div>
+    <div class="tl-item"><span class="tl-time">11:30</span><span class="tl-dot"></span><div class="tl-body"><b>孔府</b><p>孔庙北侧出门即达，天下第一家，宅邸深深 2 小时</p></div></div>
+    <div class="tl-item"><span class="tl-time">13:00</span><span class="tl-dot"></span><div class="tl-body"><b>午餐 · 孔府宴 / 熏豆腐</b><p>五马祠街或阙里街，尝一道"诗礼银杏"（见美食页）</p></div></div>
+    <div class="tl-item"><span class="tl-time">14:30</span><span class="tl-dot"></span><div class="tl-body"><b>孔林</b><p>乘景区电瓶车游览，至圣林十万墓碑，庄严肃穆 1.5 小时</p></div></div>
+    <div class="tl-item"><span class="tl-time">17:30</span><span class="tl-dot"></span><div class="tl-body"><b>夜游明故城 / 蓼河夜画</b><p>华灯初上，城墙灯影绝美收尾，夜市接着安排</p></div></div>
+  </div>
+</div>
+
+<div class="route" style="animation-delay:.18s">
+  <div class="rt-head">
+    <div class="rt-emo">🌙</div>
+    <div>
+      <h3>深度两日游 <small>文化进阶</small></h3>
+      <div class="rt-sub">Day1 三孔精华 · Day2 博物馆 + 尼山圣境</div>
+    </div>
+  </div>
+  <div class="tl">
+    <div class="tl-item"><span class="tl-time">Day1</span><span class="tl-dot"></span><div class="tl-body"><b>同"精华一日游"路线</b><p>晚间加看蓼河夜画演出（需提前购票）</p></div></div>
+    <div class="tl-item"><span class="tl-time">Day2 上</span><span class="tl-dot"></span><div class="tl-body"><b>孔子博物馆</b><p>免费预约，现代展陈惊艳，论语互动墙很出片，2.5 小时</p></div></div>
+    <div class="tl-item"><span class="tl-time">Day2 下</span><span class="tl-dot"></span><div class="tl-body"><b>尼山圣境</b><p>孔子诞生地，大学堂金碧辉煌；夜景无人机表演是重头戏（自驾约 40 分钟）</p></div></div>
+  </div>
+  <div class="btn-line">💡 体力有限可将 Day2 下午换成颜庙 + 周公庙（城区内步行可达）</div>
+</div>
+
+<div class="sect"><span class="orn">❖</span><h2>门票速查</h2></div>
+<div class="ticket" style="animation-delay:.24s">
+  <table>
+    <tr><th>景点</th><th>票价</th><th>建议时长</th></tr>
+    <tr><td>三孔联票</td><td class="p">¥140</td><td>7 日有效 · 最划算</td></tr>
+    <tr><td>孔庙</td><td class="p">¥90</td><td>2.5 小时</td></tr>
+    <tr><td>孔府</td><td class="p">¥60</td><td>2 小时</td></tr>
+    <tr><td>孔林</td><td class="p">¥40</td><td>1.5 小时</td></tr>
+    <tr><td>孔子博物馆</td><td class="free">免费</td><td>2.5 小时 · 需预约</td></tr>
+    <tr><td>颜庙</td><td class="free">免费</td><td>1 小时</td></tr>
+    <tr><td>尼山圣境</td><td class="p">¥100+</td><td>半天 · 夜场更精彩</td></tr>
+  </table>
+</div>
+<div class="ticket-note">※ 票价可能随季节调整，以景区现场与官方公众号为准；学生 / 60 岁以上老人持证半价或免票。</div>
+
+<div class="sect"><span class="orn">❖</span><h2>怎么到曲阜</h2></div>
+<div class="trans">
+  <div class="tr-card" style="animation-delay:.28s"><div class="e">🚄</div><b>高铁</b><p>曲阜东站（京沪线）<br>距市区 8 公里<br>公交 K01 / 打车 20 分钟</p></div>
+  <div class="tr-card" style="animation-delay:.34s"><div class="e">🚗</div><b>自驾</b><p>G3 京台高速<br>「曲阜」出口下<br>景区停车场充足</p></div>
+  <div class="tr-card" style="animation-delay:.4s"><div class="e">🚌</div><b>市内</b><p>三孔景区集中<br>步行即可串联<br>公交 1/2/5 路</p></div>
+</div>
+<div class="tr-tip">🧭 行中导航：打开本站 <b>地图页</b>，点景点卡片的"导航前往"可一键跳转高德导航。定位建议见<b>关于页</b>。</div>
+
+<div class="sect"><span class="orn">❖</span><h2>什么时候来</h2></div>
+<div class="season">
+  <div class="se-card se-a" style="animation-delay:.1s"><div class="e">🌸</div><b>4~5月 春</b><p>气温舒适</p></div>
+  <div class="se-card se-b" style="animation-delay:.16s"><div class="e">☀️</div><b>6~8月 夏</b><p>人流高峰</p></div>
+  <div class="se-card se-c" style="animation-delay:.22s"><div class="e">🍂</div><b>9~11月 秋</b><p>★ 最佳季节</p></div>
+  <div class="se-card se-d" style="animation-delay:.28s"><div class="e">❄️</div><b>12~2月 冬</b><p>游客稀少</p></div>
+</div>
+<div class="ticket-note">⭐ 每年 9 月 28 日孔子诞辰举行祭孔大典，场面震撼但一房难求，务必提前预订。</div>
+
+<div class="sect"><span class="orn">❖</span><h2>避坑贴士</h2></div>
+<div class="tips">
+  <div class="tip" style="animation-delay:.1s"><span class="e">👟</span><div><b>穿舒适的鞋</b><p>孔庙孔府孔林全程石板路，一天两万步起步。</p></div></div>
+  <div class="tip" style="animation-delay:.16s"><span class="e">🎧</span><div><b>请个讲解或租导览器</b><p>三孔的精髓全在典故里，干看建筑容易审美疲劳。</p></div></div>
+  <div class="tip" style="animation-delay:.22s"><span class="e">🎫</span><div><b>买联票别买单票</b><p>¥140 联票含三孔且 7 日有效，单买两个就回本。</p></div></div>
+  <div class="tip" style="animation-delay:.28s"><span class="e">⏰</span><div><b>赶早不赶晚</b><p>8 点开城仪式后第一时间进孔庙，人少光线好。</p></div></div>
+  <div class="tip" style="animation-delay:.34s"><span class="e">🧣</span><div><b>孔林注意庄重</b><p>十万墓碑的家族圣地，游览保持安静肃穆。</p></div></div>
+  <div class="tip" style="animation-delay:.4s"><span class="e">📵</span><div><b>演出提前购票</b><p>祭孔表演、蓼河夜画旺季当天常售罄，公众号提前订。</p></div></div>
+  <div class="tip" style="animation-delay:.46s"><span class="e">🚕</span><div><b>打车认准明故城南门</b><p>古城区部分路段限行，定位"明故城（南门）"最保险。</p></div></div>
+  <div class="tip" style="animation-delay:.52s"><span class="e">📸</span><div><b>最佳机位</b><p>万仞宫城墙下仰拍、大成殿飞檐、蓼河夜画倒影。</p></div></div>
+</div>
+
+<div class="foot-note">曲阜旅游指南 · 攻略页 📜 · 有朋自远方来，不亦乐乎</div>
+
+<nav class="tabbar">
+  <a href="./index.html"><span>🗺️</span>地图</a>
+  <a class="on" href="./guide.html"><span>📜</span>攻略</a>
+  <a href="./food.html"><span>🍜</span>美食</a>
+  <a href="./about.html"><span>🏮</span>关于</a>
+</nav>
+
+</body>
+</html>
