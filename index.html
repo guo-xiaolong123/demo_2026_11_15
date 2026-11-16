@@ -970,8 +970,8 @@ $("#locateBtn").onclick = () => {
         if (st === "complete" && res && res.center) {
           map.setZoomAndCenter(12.6, res.center);
           showMapTip(
-            `📡 <b>IP 城市级定位</b>：${res.province || ""}${res.city || ""}<br>` +
-            `浏览器规定精确 GPS 定位仅在 HTTPS 网页开放。`
+            `📡 <b>高德城市级定位</b>：${res.province || ""}${res.city || ""}（IP 定位精度所限）<br>` +
+            `手机 GPS 可达米级精度；当前环境可点击地图手动校正位置。`
           );
           setTimeout(() => {
             hideMapTip();
@@ -995,11 +995,18 @@ $("#locateBtn").onclick = () => {
       });
       geo.getCurrentPosition((status, result) => {
         if (status === "complete" && result.position) {
-          done();
-          setMyPos([result.position.lng, result.position.lat], result.accuracy);
-          map.setZoomAndCenter(15, [result.position.lng, result.position.lat]);
-          hideMapTip();
-          toast(`✅ 定位成功！误差约 ${Math.round(result.accuracy || 0)} 米`);
+          const acc = result.accuracy || 0;
+          if (acc > 5000) {
+            /* 浏览器返回的是 IP 猜测位（误差上万米，不可信）→ 改用高德自家定位库 */
+            showMapTip("⚠ 浏览器 IP 定位误差较大（约 " + (acc / 1000).toFixed(0) + " 公里），正在改用高德定位库校准…");
+            ipLocate();
+          } else {
+            done();
+            setMyPos([result.position.lng, result.position.lat], acc);
+            map.setZoomAndCenter(15, [result.position.lng, result.position.lat]);
+            hideMapTip();
+            toast(`✅ 定位成功！误差约 ${Math.round(acc)} 米`);
+          }
         } else {
           ipLocate();
         }
